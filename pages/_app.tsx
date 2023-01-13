@@ -1,7 +1,14 @@
-import { useEffect } from "react";
-import "../styles/globals.scss";
 import type { AppProps } from "next/app";
-import RootContextProvider from "../src/Context/rootContextProvider";
+import "../styles/globals.scss";
+
+import dynamic from "next/dynamic";
+const RootContextProvider = dynamic(
+	() => import("../src/Context/rootContextProvider"),
+	{
+		loading: () => <div>loading ...</div>,
+		ssr: false,
+	}
+);
 
 export default function App({ Component, pageProps }: AppProps) {
 	return (
