@@ -8,7 +8,7 @@ type dashboardWrapperProps = {
 
 const DashboardWrapper = ({ children }: dashboardWrapperProps) => {
 	return (
-		<div className="h-screen flex  w-screen">
+		<div className="h-screen bg-base-200 flex  w-screen">
 			<CustomSidebar />
 
 			<main className="w-full h-full">

@@ -99,7 +99,7 @@ const CustomSidebar = () => {
 		);
 	};
 	return (
-		<Sidebar className="h-full !border-r-0 shadow-200">
+		<Sidebar className="h-full !border-r-0 ">
 			<Menu>
 				<MenuItem
 					className="shadow-lg py-[7px] "

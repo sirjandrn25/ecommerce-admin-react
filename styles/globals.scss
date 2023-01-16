@@ -3,13 +3,15 @@
 @tailwind utilities;
 
 .ps-sidebar-root {
+	@apply shadow-lg;
 	.ps-sidebar-container {
-		@apply bg-base-200;
+		@apply bg-base-100;
+
 		.ps-menu-root {
 			ul {
 				li {
 					a {
-						@apply hover:bg-base-300;
+						@apply hover:bg-base-200;
 						.ps-menu-icon {
 							@apply text-accent;
 						}
