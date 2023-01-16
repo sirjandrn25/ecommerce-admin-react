@@ -8,7 +8,7 @@ const Header = () => {
 	const { theme, toggleTheme } = useTheme();
 
 	return (
-		<div className="navbar bg-base-100 border-b">
+		<div className="navbar shadow-lg bg-base-100 ">
 			<div className="flex-1 flex gap-4 px-4">
 				<Icon
 					onClick={() => collapseSidebar()}

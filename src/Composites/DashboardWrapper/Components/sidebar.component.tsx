@@ -99,10 +99,10 @@ const CustomSidebar = () => {
 		);
 	};
 	return (
-		<Sidebar className="h-full">
+		<Sidebar className="h-full !border-r-0 shadow-200">
 			<Menu>
 				<MenuItem
-					className="border-b py-[7px] "
+					className="shadow-lg py-[7px] "
 					icon={<IconUtils.DashboardIcon size={25} />}
 				>
 					{!collapsed && <div className="text-xl">Fashion Shop</div>}
