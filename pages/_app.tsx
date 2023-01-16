@@ -4,6 +4,7 @@ import "../styles/globals.scss";
 import dynamic from "next/dynamic";
 import DashboardWrapper from "../src/Composites/DashboardWrapper/dashboardWrapper";
 import { ProSidebarProvider } from "react-pro-sidebar";
+import CustomSlidingPane from "../src/Components/SlidingPane/slidingPane.component";
 
 const RootContextProvider = dynamic(
 	() => import("../src/Context/rootContextProvider"),
@@ -19,6 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
 			<ProSidebarProvider>
 				<DashboardWrapper>
 					<Component {...pageProps} />
+					<CustomSlidingPane />
 				</DashboardWrapper>
 			</ProSidebarProvider>
 		</RootContextProvider>
