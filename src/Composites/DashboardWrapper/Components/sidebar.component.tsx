@@ -6,7 +6,6 @@ import {
 	useProSidebar,
 } from "react-pro-sidebar";
 import * as IconUtils from "../../../Constants/imageMapping.constants";
-import Icon from "../../../Components/Icon/icon.component";
 import useNavigation from "../../../Hooks/useNavigation.hook";
 import { resolveNavigation } from "../../../Utils/common.utils";
 
@@ -36,7 +35,7 @@ const menus: MenuItemIterface[] = [
 		name: "Dashboard",
 		icon: IconUtils.DashboardIcon,
 
-		url: "dashboard",
+		url: "/",
 	},
 
 	{
@@ -81,8 +80,9 @@ const CustomSidebar = () => {
 						return;
 					}
 				}}
-				icon={<MenuIcon />}
+				icon={<MenuIcon size={20} />}
 				key={menu.url || index}
+				active={resolveNavigation(menu?.url || "/") === pathname}
 			>
 				{menu.name}
 			</MenuItem>
@@ -103,7 +103,7 @@ const CustomSidebar = () => {
 			<Menu>
 				<MenuItem
 					className="border-b py-[7px] "
-					icon={<Icon source={IconUtils.DashboardIcon} isReactIcon />}
+					icon={<IconUtils.DashboardIcon size={25} />}
 				>
 					{!collapsed && <div className="text-xl">Fashion Shop</div>}
 				</MenuItem>

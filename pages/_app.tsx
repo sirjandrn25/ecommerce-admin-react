@@ -2,6 +2,8 @@ import type { AppProps } from "next/app";
 import "../styles/globals.scss";
 
 import dynamic from "next/dynamic";
+import DashboardWrapper from "../src/Composites/DashboardWrapper/dashboardWrapper";
+import { ProSidebarProvider } from "react-pro-sidebar";
 
 const RootContextProvider = dynamic(
 	() => import("../src/Context/rootContextProvider"),
@@ -14,7 +16,11 @@ const RootContextProvider = dynamic(
 export default function App({ Component, pageProps }: AppProps) {
 	return (
 		<RootContextProvider>
-			<Component {...pageProps} />
+			<ProSidebarProvider>
+				<DashboardWrapper>
+					<Component {...pageProps} />
+				</DashboardWrapper>
+			</ProSidebarProvider>
 		</RootContextProvider>
 	);
 }

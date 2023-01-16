@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-.test {
-	@apply bg-primary;
+.ps-sidebar-root {
+	.ps-sidebar-container {
+		@apply bg-base-200;
+		.ps-menu-root {
+			ul {
+				li {
+					a {
+						@apply hover:bg-base-300;
+						.ps-menu-icon {
+							@apply text-accent;
+						}
+					}
+				}
+				.ps-active {
+					.ps-active {
+						@apply bg-base-300;
+					}
+				}
+			}
+		}
+	}
 }
