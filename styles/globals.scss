@@ -26,3 +26,22 @@
 		}
 	}
 }
+.slide-pane {
+	.slide-pane__header {
+		.slide-pane__close {
+			@apply m-0 px-5;
+		}
+		.slide-pane__close {
+			@apply text-xl;
+		}
+		.slide-pane__title-wrapper {
+			@apply m-0  pr-5 font-semibold;
+			.slide-pane__title {
+				@apply font-bold;
+			}
+		}
+	}
+	.slide-pane__content {
+		@apply p-0;
+	}
+}

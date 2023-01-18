@@ -4,7 +4,8 @@ import "../styles/globals.scss";
 import dynamic from "next/dynamic";
 import DashboardWrapper from "../src/Composites/DashboardWrapper/dashboardWrapper";
 import { ProSidebarProvider } from "react-pro-sidebar";
-import CustomSlidingPane from "../src/Components/SlidingPane/slidingPane.component";
+
+import SlidingPaneWrapper from "../src/Components/SlidingPane/slidingPaneWrapper.component";
 
 const RootContextProvider = dynamic(
 	() => import("../src/Context/rootContextProvider"),
@@ -16,13 +17,20 @@ const RootContextProvider = dynamic(
 
 export default function App({ Component, pageProps }: AppProps) {
 	return (
-		<RootContextProvider>
-			<ProSidebarProvider>
-				<DashboardWrapper>
-					<Component {...pageProps} />
-					<CustomSlidingPane />
-				</DashboardWrapper>
-			</ProSidebarProvider>
-		</RootContextProvider>
+		<div className="root">
+			<RootContextProvider>
+				<ProSidebarProvider>
+					<DashboardWrapper>
+						<Component {...pageProps} />
+					</DashboardWrapper>
+				</ProSidebarProvider>
+
+				<SlidingPaneWrapper
+					ref={(ref) => {
+						console.log(ref);
+					}}
+				/>
+			</RootContextProvider>
+		</div>
 	);
 }

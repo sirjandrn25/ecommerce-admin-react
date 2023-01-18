@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import Header from "./Components/header.component";
 import CustomSidebar from "./Components/sidebar.component";
+import SlidingPane from "../../Components/SlidingPane/slidingPane.component";
 
 type dashboardWrapperProps = {
 	children: ReactNode;

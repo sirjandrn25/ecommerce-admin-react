@@ -1,17 +1,50 @@
-import React, { useState } from "react";
-import SlidingPanel from "react-sliding-side-panel";
+import React, { ReactNode, useState } from "react";
+import ReactSlidingPane from "react-sliding-pane";
+import "react-sliding-pane/dist/react-sliding-pane.css";
+import { EmptyFunction } from "../../Utils/common.utils";
 
-const CustomSlidingPane = () => {
-	const [openPanel, setOpenPanel] = useState(true);
-	console.log({ openPanel });
+interface SlidingPaneInterface {
+	isVisible?: boolean;
+	headingTitle?: string;
+	headingSubTitle?: string;
+	size?: number;
+	children: ReactNode;
+	className?: string;
+	closePane?: (data?: any) => void;
+}
+
+const SlidingPane = ({
+	children,
+	isVisible,
+	headingSubTitle,
+	headingTitle,
+	size = 300,
+	className = "",
+	closePane = EmptyFunction,
+	...rest
+}: SlidingPaneInterface) => {
+	const width = `${size}px`;
+
+	const handleClosePane = () => {
+		closePane();
+	};
+
 	return (
-		<SlidingPanel type={"right"} isOpen={openPanel} size={40}>
-			<div className="bg-base-300">
-				<div>My Panel Content</div>
-				<button onClick={() => setOpenPanel(false)}>close</button>
-			</div>
-		</SlidingPanel>
+		<ReactSlidingPane
+			onRequestClose={handleClosePane}
+			// closeIcon={<div>Some div containing custom close icon.</div>}
+			from={"right"}
+			isOpen={isVisible}
+			width={width}
+			title={headingTitle}
+			subtitle={headingSubTitle}
+			className={`p-0 ${className}`}
+
+			// hideHeader={true}
+		>
+			{children}
+		</ReactSlidingPane>
 	);
 };
 
-export default CustomSlidingPane;
+export default SlidingPane;
