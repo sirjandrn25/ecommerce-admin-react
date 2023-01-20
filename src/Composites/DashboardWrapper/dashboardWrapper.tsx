@@ -14,6 +14,7 @@ const DashboardWrapper = ({ children }: dashboardWrapperProps) => {
 
 			<main className="w-full h-full">
 				<Header />
+				{children}
 			</main>
 		</div>
 	);

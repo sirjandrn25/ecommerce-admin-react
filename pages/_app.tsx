@@ -6,6 +6,7 @@ import DashboardWrapper from "../src/Composites/DashboardWrapper/dashboardWrappe
 import { ProSidebarProvider } from "react-pro-sidebar";
 
 import SlidingPaneWrapper from "../src/Components/SlidingPane/slidingPaneWrapper.component";
+import SlidingPane from "../src/Utils/slidingPane.utils";
 
 const RootContextProvider = dynamic(
 	() => import("../src/Context/rootContextProvider"),
@@ -27,7 +28,9 @@ export default function App({ Component, pageProps }: AppProps) {
 
 				<SlidingPaneWrapper
 					ref={(ref) => {
-						console.log(ref);
+						if (ref) {
+							SlidingPane.register(ref);
+						}
 					}}
 				/>
 			</RootContextProvider>

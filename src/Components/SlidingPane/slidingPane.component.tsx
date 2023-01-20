@@ -10,7 +10,8 @@ interface SlidingPaneInterface {
 	size?: number;
 	children: ReactNode;
 	className?: string;
-	closePane?: (data?: any) => void;
+	closeModal?: (data?: any) => void;
+	openFrom?: "right" | "left" | "bottom";
 }
 
 const SlidingPane = ({
@@ -20,20 +21,21 @@ const SlidingPane = ({
 	headingTitle,
 	size = 300,
 	className = "",
-	closePane = EmptyFunction,
+	closeModal = EmptyFunction,
+	openFrom = "right",
 	...rest
 }: SlidingPaneInterface) => {
 	const width = `${size}px`;
 
 	const handleClosePane = () => {
-		closePane();
+		closeModal();
 	};
 
 	return (
 		<ReactSlidingPane
 			onRequestClose={handleClosePane}
 			// closeIcon={<div>Some div containing custom close icon.</div>}
-			from={"right"}
+			from={openFrom}
 			isOpen={isVisible}
 			width={width}
 			title={headingTitle}

@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useImperativeHandle, useState } from "react";
 import SlidingPane from "./slidingPane.component";
 
 interface SlidingPaneWrapperInterface {
@@ -7,16 +7,48 @@ interface SlidingPaneWrapperInterface {
 	headingSubTitle?: string;
 	props?: any;
 	size?: number;
+	openFrom?: "right" | "left" | "bottom";
 }
 
 // eslint-disable-next-line react/display-name
-const SlidingPaneWrapper = React.forwardRef((props, _ref) => {
+const SlidingPaneWrapper = React.forwardRef((props, ref) => {
 	const [modals, setModals] = useState<any>([]);
 
 	const close = (close_index: number = modals.length - 1) => {
-		const modal_list = [...modals];
-		modal_list.splice(close_index, 1);
-		setModals(modal_list);
+		setTimeout(() => {
+			const modal_list = [...modals];
+			modal_list.splice(close_index, 1);
+			setModals(modal_list);
+		}, 400);
+		const currentModal = modals[close_index];
+		currentModal.isVisible = false;
+		setModals((prev: any) => {
+			return (prev || []).map((modal: any, index: number) =>
+				close_index === index ? currentModal : modal
+			);
+		});
+	};
+	const closeAll = () => {
+		setModals((prev: any) => {
+			return (prev || []).map((modal: any) => (modal.isVisible = false));
+		});
+		setTimeout(() => {
+			setModals([]);
+		}, 300);
+	};
+	const updateProps = (update_props: any) => {
+		setModals((prev: any) => {
+			const update_index = (prev || []).length - 1;
+			return (prev || []).map((modal: any, index: number) => {
+				if (index === update_index) {
+					return {
+						...modal,
+						...update_props,
+					};
+				}
+				return modal;
+			});
+		});
 	};
 
 	const open = ({
@@ -29,10 +61,24 @@ const SlidingPaneWrapper = React.forwardRef((props, _ref) => {
 			component,
 			isVisible: true,
 			...rest,
-			close,
 		};
-		setModals([...modals, sheet]);
+
+		setModals((prev: any = []) => {
+			return [...prev, sheet];
+		});
 	};
+	useImperativeHandle(
+		ref,
+		() => {
+			return {
+				close,
+				open,
+				closeAll,
+				updateProps,
+			};
+		},
+		[]
+	);
 
 	const EmptyComponent = () => {
 		return <></>;
@@ -40,10 +86,9 @@ const SlidingPaneWrapper = React.forwardRef((props, _ref) => {
 
 	const renderModals = () => {
 		return (modals || []).map((sheet: any, index: number) => {
-			console.log({ sheet });
 			const Component = sheet?.component || EmptyComponent;
 			return (
-				<SlidingPane {...sheet} key={index}>
+				<SlidingPane closeModal={close} {...sheet} key={index}>
 					<Component {...sheet.props} />
 				</SlidingPane>
 			);
