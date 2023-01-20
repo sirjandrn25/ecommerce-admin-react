@@ -12,3 +12,4 @@ export { BsToggles as ToggleIcon } from "react-icons/bs";
 export { BsFillGridFill as DashboardIcon } from "react-icons/bs";
 export { BsColumns as ProductIcon } from "react-icons/bs";
 export { BsPeople as UsersIcon } from "react-icons/bs";
+export { AiOutlineClose as CloseIcon } from "react-icons/ai";

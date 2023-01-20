@@ -5,6 +5,9 @@ import dynamic from "next/dynamic";
 import DashboardWrapper from "../src/Composites/DashboardWrapper/dashboardWrapper";
 import { ProSidebarProvider } from "react-pro-sidebar";
 
+import SlidingPaneWrapper from "../src/Components/SlidingPane/slidingPaneWrapper.component";
+import SlidingPane from "../src/Utils/slidingPane.utils";
+
 const RootContextProvider = dynamic(
 	() => import("../src/Context/rootContextProvider"),
 	{
@@ -15,12 +18,22 @@ const RootContextProvider = dynamic(
 
 export default function App({ Component, pageProps }: AppProps) {
 	return (
-		<RootContextProvider>
-			<ProSidebarProvider>
-				<DashboardWrapper>
-					<Component {...pageProps} />
-				</DashboardWrapper>
-			</ProSidebarProvider>
-		</RootContextProvider>
+		<div className="root">
+			<RootContextProvider>
+				<ProSidebarProvider>
+					<DashboardWrapper>
+						<Component {...pageProps} />
+					</DashboardWrapper>
+				</ProSidebarProvider>
+
+				<SlidingPaneWrapper
+					ref={(ref) => {
+						if (ref) {
+							SlidingPane.register(ref);
+						}
+					}}
+				/>
+			</RootContextProvider>
+		</div>
 	);
 }
