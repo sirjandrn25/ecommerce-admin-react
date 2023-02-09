@@ -55,7 +55,7 @@ const Product = () => {
 						SlidingPaneUtil.open({
 							component: DummyComponent,
 							headingTitle: title,
-							openFrom: "bottom",
+							openFrom: "right",
 						});
 						// SlidingPane.open({
 						// 	compnent:
