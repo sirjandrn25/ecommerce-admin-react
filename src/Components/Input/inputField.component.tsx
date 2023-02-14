@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Debounce } from "../../Utils/common.utils";
 
 export type inputBaseProps = {
 	label?: string;
@@ -14,6 +15,7 @@ export type inputBaseProps = {
 	disabled?: boolean;
 	prefix?: any;
 	suffix?: any;
+	onDebounceChange: (value: any) => void;
 };
 export type inputFieldProps = inputBaseProps & {
 	type?: "text" | "number" | "email" | "textarea" | "password" | "file";
@@ -37,6 +39,7 @@ const InputField = ({
 	disabled = false,
 	prefix,
 	suffix,
+	onDebounceChange,
 
 	// size='sm',
 	...rest
@@ -48,6 +51,9 @@ const InputField = ({
 		setInputValue(input_val);
 		if (onChange) {
 			onChange(input_val);
+		}
+		if (onDebounceChange) {
+			Debounce(onDebounceChange, 300)(input_val);
 		}
 	};
 	const handleBlur = (e: any) => {
