@@ -5,15 +5,12 @@ export const EmptyFunction = () => {
 export const resolveNavigation = (path: string) => {
 	return `/admin/${path}`;
 };
-
+let timer: any;
 export const Debounce = (func: (value?: any) => void, wait: number) => {
-	let timer: any;
 	return (...args: any) => {
 		const context = this;
 		clearTimeout(timer);
-
 		timer = setTimeout(() => {
-			console.log(args);
 			func.apply(context, args);
 		}, wait);
 	};

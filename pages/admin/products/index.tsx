@@ -47,7 +47,7 @@ const Product = () => {
 		<div>
 			<InputField
 				label="Debounce Field"
-				onDebounce={(value) => console.log(value)}
+				onDebounceChange={(value) => console.log(value)}
 			/>
 		</div>
 	);
