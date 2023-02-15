@@ -15,7 +15,7 @@ export type inputBaseProps = {
 	disabled?: boolean;
 	prefix?: any;
 	suffix?: any;
-	onDebounceChange: (value: any) => void;
+	onDebounceChange?: (value: any) => void;
 };
 export type inputFieldProps = inputBaseProps & {
 	type?: "text" | "number" | "email" | "textarea" | "password" | "file";
@@ -93,7 +93,7 @@ const InputField = ({
 				/>
 			)}
 			{type === "textarea" && (
-				<TextAreaComponent
+				<TextareaInput
 					handleChange={handleChange}
 					inputValue={inputValue}
 					placeholder={placeholder}
@@ -145,7 +145,7 @@ const InputComponent = ({
 	);
 };
 
-const TextAreaComponent = ({
+export const TextareaInput = ({
 	placeholder,
 	inputValue,
 	handleChange,
