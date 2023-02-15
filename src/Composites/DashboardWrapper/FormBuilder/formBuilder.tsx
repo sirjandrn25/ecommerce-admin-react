@@ -1,10 +1,10 @@
-import next from "next";
 import { useCallback, useMemo } from "react";
 import Button from "../../../Components/Button/button.component";
 import InputField, {
 	TextareaInput,
 } from "../../../Components/Input/inputField.component";
 import SelectBox from "../../../Components/SelectBox/selecBox.component";
+import { EmptyFunction } from "../../../Utils/common.utils";
 import useForm from "./Hooks/useForm.hook";
 import { FormInterface } from "./Types/form.types";
 
@@ -13,19 +13,22 @@ const FormBuilder = ({
 	data,
 	layout = "one",
 	className = "",
+	handleSubmit = EmptyFunction,
+	realTimeValidate = true,
 }: FormInterface) => {
-	const { error, handleFormData, formData, onSubmit } = useForm(fields, data);
+	const { error, handleFormData, formData, onSubmit } = useForm(
+		fields,
+		data,
+		handleSubmit,
+		realTimeValidate
+	);
+
 	const hasError = useCallback(
 		(key: string) => {
 			return typeof error[key] !== "undefined";
 		},
 		[error]
 	);
-
-	const handleSubmit = (next: any) => {
-		// e.preventDefault();
-		onSubmit(next);
-	};
 
 	const getSchemaElement = useCallback(
 		(field: any) => {
@@ -38,8 +41,8 @@ const FormBuilder = ({
 							options={options}
 							label={label}
 							value={formData[name]}
-							onChange={(value) => {
-								handleFormData(name, value);
+							onChange={(option) => {
+								handleFormData(name, option);
 							}}
 							error={hasError(name)}
 							errorMessage={error[name]}
@@ -91,7 +94,7 @@ const FormBuilder = ({
 		});
 	}, [fields, getSchemaElement]);
 	const layoutClass = useMemo(() => {
-		let className = `p-4 gap-4 grid`;
+		let className = `gap-4 grid`;
 		switch (layout) {
 			case "two":
 				return `${className} grid-cols-2`;
@@ -106,11 +109,12 @@ const FormBuilder = ({
 			onSubmit={(e) => {
 				e.preventDefault();
 			}}
-			className={className}
 		>
-			<div className={layoutClass}>
-				{renderSchema()}
-				<Button onClick={handleSubmit}>Save</Button>
+			<div className={`p-4 flex flex-col gap-4 ${className} `}>
+				<div className={layoutClass}>{renderSchema()}</div>
+				<Button progress onClick={onSubmit}>
+					Save
+				</Button>
 			</div>
 		</form>
 	);

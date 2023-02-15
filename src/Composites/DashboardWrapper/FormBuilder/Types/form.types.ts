@@ -1,3 +1,5 @@
+import { SelectBoxType } from "../../../../Components/SelectBox/selecBox.component";
+
 export interface ValidationInterface {
 	minLength?: number;
 	maxLength?: number;
@@ -9,14 +11,8 @@ export type SchemaBaseType = {
 	label: string;
 	name: string;
 	isRequired?: boolean;
-	validations?: ValidationInterface;
+	validation?: ValidationInterface;
 	className?: string;
-};
-
-type SelectOptionType = {
-	label: string;
-	value: string;
-	data?: any;
 };
 
 export type SchemaInputType = SchemaBaseType & {
@@ -25,10 +21,7 @@ export type SchemaInputType = SchemaBaseType & {
 
 export type SelectSchemaType = SchemaBaseType & {
 	type: "select" | "radio";
-	options: SelectOptionType[];
-	clear?: boolean;
-	radio_type?: string;
-};
+} & SelectBoxType;
 
 export type SchemaType = SchemaInputType | SelectSchemaType;
 
@@ -38,4 +31,6 @@ export interface FormInterface {
 	data?: any;
 	className?: string;
 	layout?: "one" | "two" | "three";
+	handleSubmit?: any;
+	realTimeValidate?: boolean;
 }

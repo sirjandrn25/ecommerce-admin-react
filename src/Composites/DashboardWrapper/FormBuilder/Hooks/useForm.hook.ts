@@ -17,6 +17,14 @@ const getJoiValidation = (
 		case "email":
 			joiValidation = Joi.string().email({ tlds: { allow: false } });
 			break;
+		case "select":
+			joiValidation = Joi.alternatives().try(
+				Joi.number(),
+				Joi.string(),
+				Joi.object(),
+				Joi.array()
+			);
+			break;
 		default:
 			joiValidation = Joi.string();
 	}
@@ -55,15 +63,36 @@ const getJoiSchema = (fields: any) => {
 			validation,
 		} = field;
 
+		if (!isRequired && !validation) {
+			// schema[name] = Joi.string().optional().allow(null).empty("");
+			continue;
+		}
 		schema[name] = getJoiValidation(type, dispalayLabel, {
 			...validation,
-			isRequired,
+			isRequired: isRequired,
 		});
 	}
+
 	return Joi.object({ ...schema });
 };
+export const getJoiValidationOptions = () => {
+	return {
+		abortEarly: false,
+		allowUnknown: true,
+		errors: {
+			wrap: {
+				label: "",
+			},
+		},
+	};
+};
 
-const useForm = (schema: any, data: any = {}) => {
+const useForm = (
+	schema: any,
+	data: any = {},
+	handleSubmit: any = EmptyFunction,
+	realTimeValidate?: boolean
+) => {
 	const [error, setError] = useState<any>({});
 	const [formData, setFormData] = useState<any>(data);
 
@@ -72,8 +101,10 @@ const useForm = (schema: any, data: any = {}) => {
 	}, [schema]);
 	const verify = (key: any = null) => {
 		const { error: err } = validationSchema.validate(
-			key ? { [key]: formData[key] } : formData
+			key ? { [key]: formData[key] } : formData,
+			{ ...getJoiValidationOptions() }
 		);
+
 		if (err) {
 			setError(JoiErrorMessageToJson(err));
 			return false;
@@ -83,6 +114,7 @@ const useForm = (schema: any, data: any = {}) => {
 	};
 
 	const handleFormData = (key: string, value: any) => {
+		realTimeValidate && verify();
 		setFormData((prev: any) => {
 			return {
 				...prev,
@@ -93,7 +125,8 @@ const useForm = (schema: any, data: any = {}) => {
 
 	const onSubmit = (next: any = EmptyFunction) => {
 		const isValid = verify();
-		if (!isValid) {
+		if (isValid) {
+			handleSubmit(formData);
 		}
 		next();
 	};

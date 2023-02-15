@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import Select from "react-select";
 import { EmptyFunction } from "../../Utils/common.utils";
-type selectOptionProps = {
+export type SelectOptionType = {
 	label: string;
-	value: string;
+	value: string | number;
 	data?: any;
 };
 
-type selectBoxProps = {
+export type SelectBoxType = {
 	label?: string;
-	options: selectOptionProps[];
+	options: SelectOptionType[];
 	onChange?: (value: any) => any;
 	error?: boolean;
 	isMultiple?: boolean;
@@ -31,7 +31,7 @@ const SelectBox = ({
 	isRequired = false,
 	defaultTheme = {},
 	className = "",
-}: selectBoxProps) => {
+}: SelectBoxType) => {
 	const [value, setValue] = useState<any>(defaultInputValue);
 	const error_color = "#dc143c";
 

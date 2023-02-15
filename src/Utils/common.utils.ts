@@ -15,3 +15,12 @@ export const Debounce = (func: (value?: any) => void, wait: number) => {
 		}, wait);
 	};
 };
+
+export const GetObjectFromArray = (arr: any[], key: string, value: any) => {
+	for (let element of arr) {
+		if (element[key] === value) {
+			return element;
+		}
+	}
+	return {};
+};
