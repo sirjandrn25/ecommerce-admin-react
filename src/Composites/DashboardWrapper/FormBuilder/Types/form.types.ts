@@ -1,3 +1,4 @@
+import { InputBaseType } from "./../../../../Components/Input/inputField.component";
 import { SelectBoxType } from "../../../../Components/SelectBox/selecBox.component";
 
 export interface ValidationInterface {
@@ -7,7 +8,7 @@ export interface ValidationInterface {
 	pattern?: string;
 }
 
-export type SchemaBaseType = {
+export type SchemaBaseType = InputBaseType & {
 	label: string;
 	name: string;
 	isRequired?: boolean;
@@ -25,6 +26,11 @@ export type SelectSchemaType = SchemaBaseType & {
 
 export type SchemaType = SchemaInputType | SelectSchemaType;
 
+type childrenType = {
+	onSubmit: () => void;
+	error: any;
+	formData: any;
+};
 export interface FormInterface {
 	fields: SchemaType[];
 	onSubmit?: (data?: any) => void;
@@ -33,4 +39,5 @@ export interface FormInterface {
 	layout?: "one" | "two" | "three";
 	handleSubmit?: any;
 	realTimeValidate?: boolean;
+	children?: (data: childrenType) => void;
 }

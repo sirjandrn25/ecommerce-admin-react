@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Debounce } from "../../Utils/common.utils";
 
-export type inputBaseProps = {
+export type InputBaseType = {
 	label?: string;
 	// size?: 'xs' | 'sm' | 'md' | 'lg'
 	value?: any;
@@ -15,9 +15,11 @@ export type inputBaseProps = {
 	disabled?: boolean;
 	prefix?: any;
 	suffix?: any;
+	autoComplete?: boolean;
+	autoFocus?: boolean;
 	onDebounceChange?: (value: any) => void;
 };
-export type inputFieldProps = inputBaseProps & {
+export type InputFieldType = InputBaseType & {
 	type?: "text" | "number" | "email" | "textarea" | "password" | "file";
 	icon?: any;
 };
@@ -43,7 +45,7 @@ const InputField = ({
 
 	// size='sm',
 	...rest
-}: inputFieldProps) => {
+}: InputFieldType) => {
 	const [inputValue, setInputValue] = useState<any>(value || "");
 
 	const handleChange = (e: any) => {

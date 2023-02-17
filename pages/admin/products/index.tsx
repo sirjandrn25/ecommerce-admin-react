@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SelectOptionType } from "../../../src/Components/SelectBox/selecBox.component";
 import FormBuilder from "../../../src/Composites/DashboardWrapper/FormBuilder/formBuilder";
 import { FormInterface } from "../../../src/Composites/DashboardWrapper/FormBuilder/Types/form.types";
 import SlidingPaneUtil from "../../../src/Utils/slidingPane.utils";
+import Button from "../../../src/Components/Button/button.component";
 
 const Product = () => {
 	const [title, setTitle] = useState("This is Title");
+	const formRef = useRef<any>();
+
 	useEffect(() => {
 		SlidingPaneUtil.updateProps({ headingTitle: title });
 	}, [title]);
@@ -27,6 +30,7 @@ const Product = () => {
 				label: "Last Name",
 				type: "text",
 			},
+
 			{
 				name: "email",
 				label: "Email Address",
@@ -51,14 +55,31 @@ const Product = () => {
 				isRequired: true,
 				isMultiple: true,
 			},
+			{
+				name: "description",
+				label: "Description",
+				type: "textarea",
+			},
 		],
 		layout: "two",
 		handleSubmit: (data: any) => {
 			console.log({ data });
 		},
 	};
+	console.log(formRef);
 
-	return <FormBuilder {...form_props} />;
+	return (
+		<div className="col-flex gap-10">
+			<FormBuilder {...form_props} ref={formRef} />
+			<Button
+				onClick={() => {
+					// formRef?.current?.onSubmit();
+				}}
+			>
+				Extra Submit
+			</Button>
+		</div>
+	);
 };
 
 export default Product;

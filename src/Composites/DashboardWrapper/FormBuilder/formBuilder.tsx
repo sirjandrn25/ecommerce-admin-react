@@ -1,123 +1,105 @@
-import { useCallback, useMemo } from "react";
+import {
+	forwardRef,
+	memo,
+	useCallback,
+	useImperativeHandle,
+	useMemo,
+} from "react";
 import Button from "../../../Components/Button/button.component";
-import InputField, {
-	TextareaInput,
-} from "../../../Components/Input/inputField.component";
-import SelectBox from "../../../Components/SelectBox/selecBox.component";
 import { EmptyFunction } from "../../../Utils/common.utils";
+import getSchemaElement from "./Components/getSchemaElement.component";
 import useForm from "./Hooks/useForm.hook";
 import { FormInterface } from "./Types/form.types";
 
-const FormBuilder = ({
-	fields,
-	data,
-	layout = "one",
-	className = "",
-	handleSubmit = EmptyFunction,
-	realTimeValidate = true,
-}: FormInterface) => {
-	const { error, handleFormData, formData, onSubmit } = useForm(
-		fields,
-		data,
-		handleSubmit,
-		realTimeValidate
-	);
+const FormBuilder = forwardRef(
+	(
+		{
+			fields,
+			data,
+			layout = "one",
+			className = "",
+			handleSubmit = EmptyFunction,
+			realTimeValidate = false,
+			...rest
+		}: FormInterface,
+		ref: any
+	) => {
+		const { error, handleFormData, formData, onSubmit } = useForm(
+			fields,
+			data,
+			handleSubmit,
+			realTimeValidate
+		);
+		useImperativeHandle(
+			ref,
+			() => {
+				onSubmit: onSubmit;
+			},
+			[onSubmit]
+		);
 
-	const hasError = useCallback(
-		(key: string) => {
-			return typeof error[key] !== "undefined";
-		},
-		[error]
-	);
+		const hasError = useCallback(
+			(key: string) => {
+				return typeof error[key] !== "undefined";
+			},
+			[error]
+		);
 
-	const getSchemaElement = useCallback(
-		(field: any) => {
-			const { type, name, label, options = [] } = field;
-			switch (type) {
-				case "select":
-					return (
-						<SelectBox
+		const renderSchema = useCallback(() => {
+			return fields.map((field, index: number) => {
+				const Element = getSchemaElement(field?.type);
+				return (
+					<div key={field.name || index} className={field.name}>
+						<Element
 							{...field}
-							options={options}
-							label={label}
-							value={formData[name]}
-							onChange={(option) => {
-								handleFormData(name, option);
+							onChange={(value: any) => {
+								handleFormData(field.name, value);
 							}}
-							error={hasError(name)}
-							errorMessage={error[name]}
+							value={formData[field?.name]}
+							error={hasError(field.name)}
+							errorMessage={error[field?.name]}
 						/>
-					);
-
-				case "textarea":
-					return (
-						<TextareaInput
-							label={label}
-							value={formData[name]}
-							onBlur={(value: any) => handleFormData(name, value)}
-							{...field}
-							error={hasError(name)}
-							errorMessage={error[name]}
-						/>
-					);
-				case "file":
-					return <></>; // return file component
-
-				default: // type is text, number
-					return (
-						<InputField
-							type={type}
-							label={label}
-							value={formData[name]}
-							{...field}
-							onBlur={(value) => {
-								handleFormData(
-									name,
-									["number"].includes(type) ? +value : value
-								);
-							}}
-							error={hasError(name)}
-							errorMessage={error[name]}
-						/>
-					);
+					</div>
+				);
+			});
+		}, [fields, formData, hasError, error, handleFormData]);
+		const layoutClass = useMemo(() => {
+			let className = `gap-4 grid`;
+			switch (layout) {
+				case "two":
+					return `${className} grid-cols-2`;
+				case "three":
+					return `${className} grid-cols-3`;
+				default:
+					return `${className} grid-cols-1`;
 			}
-		},
-		[error, formData, handleFormData, hasError]
-	);
-	const renderSchema = useCallback(() => {
-		return fields.map((field, index: number) => {
-			return (
-				<div key={field.name || index} className={field.name}>
-					{getSchemaElement(field)}
-				</div>
-			);
-		});
-	}, [fields, getSchemaElement]);
-	const layoutClass = useMemo(() => {
-		let className = `gap-4 grid`;
-		switch (layout) {
-			case "two":
-				return `${className} grid-cols-2`;
-			case "three":
-				return `${className} grid-cols-3`;
-			default:
-				return `${className} grid-cols-1`;
+		}, [layout]);
+		function children(arg0: {
+			onSubmit: (next?: any) => void;
+			error: any;
+			formData: any;
+		}): import("react").ReactNode {
+			throw new Error("Function not implemented.");
 		}
-	}, [layout]);
-	return (
-		<form
-			onSubmit={(e) => {
-				e.preventDefault();
-			}}
-		>
-			<div className={`p-4 flex flex-col gap-4 ${className} `}>
-				<div className={layoutClass}>{renderSchema()}</div>
-				<Button progress onClick={onSubmit}>
-					Save
-				</Button>
-			</div>
-		</form>
-	);
-};
 
-export default FormBuilder;
+		return (
+			<form
+				onSubmit={(e) => {
+					e.preventDefault();
+				}}
+				ref={ref}
+			>
+				<div className={`p-4 flex flex-col gap-4 ${className} `}>
+					<div className={layoutClass}>{renderSchema()}</div>
+					{rest?.children ? (
+						children({ onSubmit, error, formData })
+					) : (
+						<Button onClick={onSubmit}>Save</Button>
+					)}
+				</div>
+			</form>
+		);
+	}
+);
+FormBuilder.displayName = "FormBuilder";
+export default memo(FormBuilder);
