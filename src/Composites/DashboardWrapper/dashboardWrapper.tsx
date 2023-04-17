@@ -1,23 +1,22 @@
 import { ReactNode } from "react";
 import Header from "./Components/header.component";
 import CustomSidebar from "./Components/sidebar.component";
-import SlidingPane from "../../Components/SlidingPane/slidingPane.component";
 
 type dashboardWrapperProps = {
-	children: ReactNode;
+  children: ReactNode;
 };
 
 const DashboardWrapper = ({ children }: dashboardWrapperProps) => {
-	return (
-		<div className="h-screen bg-base-200 flex  w-screen">
-			<CustomSidebar />
+  return (
+    <div className="flex w-screen h-screen bg-base-200">
+      <CustomSidebar />
 
-			<main className="w-full h-full">
-				<Header />
-				{children}
-			</main>
-		</div>
-	);
+      <main className="w-full h-full">
+        <Header />
+        {children}
+      </main>
+    </div>
+  );
 };
 
 export default DashboardWrapper;
