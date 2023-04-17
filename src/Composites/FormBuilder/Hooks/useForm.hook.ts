@@ -1,6 +1,6 @@
+import { EmptyFunction } from "@Utils/common.utils";
 import Joi from "joi";
-import { useMemo, useState } from "react";
-import { EmptyFunction } from "../../../Utils/common.utils";
+import { useState, useMemo, useCallback } from "react";
 import { JoiErrorMessageToJson } from "../Utils/joiValidation.utils";
 
 //single validation object get
@@ -95,7 +95,9 @@ const useForm = (
   }, [schema]);
   const verify = (key: any = null) => {
     const { error: err } = validationSchema.validate(
-      key ? { [key]: formData[key] } : formData,
+      key
+        ? { [key]: sanitizeFormData(formData[key]) }
+        : sanitizeFormData(formData),
       { ...getJoiValidationOptions() }
     );
 
@@ -117,12 +119,22 @@ const useForm = (
     });
   };
 
+  const sanitizeFormData = useCallback((data: any) => {
+    let sanitizeData: any = {};
+    for (let [key, value] of Object.entries(data)) {
+      sanitizeData = mappingToJson(sanitizeData, key.split("."), value);
+    }
+    return sanitizeData;
+  }, []);
+
   const onSubmit = (next: any = EmptyFunction) => {
     const isValid = verify();
     if (isValid) {
-      handleSubmit(formData);
+      handleSubmit(sanitizeFormData(formData), next);
+      return;
     }
     next();
+    // next();
   };
 
   return {
@@ -130,6 +142,32 @@ const useForm = (
     error,
     onSubmit,
     formData,
+  };
+};
+
+const parseToJson = (keys: string[], value: any) => {
+  return keys.reverse().reduce((prev, next) => {
+    return { [next]: prev };
+  }, value);
+};
+
+const mappingToJson = (
+  base_value: any,
+  insert_keys: string[],
+  insert_value: any
+) => {
+  for (const [key, value] of Object.entries(base_value)) {
+    if (insert_keys.includes(key)) {
+      insert_keys.shift(); //pop first value
+
+      base_value[key] = mappingToJson(value, [...insert_keys], insert_value);
+
+      return base_value;
+    }
+  }
+  return {
+    ...base_value,
+    ...parseToJson(insert_keys, insert_value),
   };
 };
 
