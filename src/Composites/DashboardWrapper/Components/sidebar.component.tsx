@@ -5,9 +5,9 @@ import {
   SubMenu,
   useProSidebar,
 } from "react-pro-sidebar";
-import * as IconUtils from "../../../Constants/imageMapping.constants";
-import useNavigation from "../../../Hooks/useNavigation.hook";
-import { resolveNavigation } from "../../../Utils/common.utils";
+import * as IconUtils from "@Constants/imageMapping.constants";
+import useNavigation from "@Hooks/useNavigation.hook";
+import { resolveNavigation } from "@Utils/common.utils";
 
 interface MenuBaseItemIterface {
   name: string;
@@ -27,9 +27,6 @@ interface MenuItemIterface extends MenuBaseItemIterface {
   sub_menu?: SubMenuIterface;
 }
 
-interface SidebarInterface {
-  menus: MenuItemIterface[];
-}
 const menus: MenuItemIterface[] = [
   {
     name: "Dashboard",
