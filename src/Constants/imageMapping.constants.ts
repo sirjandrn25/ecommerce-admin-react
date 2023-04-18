@@ -13,3 +13,6 @@ export { BsFillGridFill as DashboardIcon } from "react-icons/bs";
 export { BsColumns as ProductIcon } from "react-icons/bs";
 export { BsPeople as UsersIcon } from "react-icons/bs";
 export { AiOutlineClose as CloseIcon } from "react-icons/ai";
+export { BiChevronRight as ArrowChevronRight } from "react-icons/bi";
+export { BiChevronLeft as ArrowChevronLeft } from "react-icons/bi";
+export { BiDownload as DownLineIcon } from "react-icons/bi";
