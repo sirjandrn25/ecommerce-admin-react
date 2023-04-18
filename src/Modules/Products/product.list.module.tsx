@@ -2,12 +2,26 @@ import GenericListing, {
   GenericListingInterface,
 } from "@Composites/GenericListing/genericListing";
 import { PRODUCT_API_ROUTE } from "@Constants/apiRoute.constant";
-import useProductList from "./Hooks/useProductList.module";
+import { PRODUCT_CREATE_ROUTE } from "@Constants/route.constant";
+import useNavigation from "@Hooks/useNavigation.hook";
 
 const ProductListModule = () => {
+  const { navigation } = useNavigation();
   const listing_props: GenericListingInterface = {
     name: "Product Lists",
     end_point: PRODUCT_API_ROUTE,
+    actions: [
+      {
+        name: "Add New",
+        action: () => {
+          navigation({
+            pathname: PRODUCT_CREATE_ROUTE,
+          });
+        },
+        key: "add",
+        outline: true,
+      },
+    ],
     table: {
       columns: [
         {
