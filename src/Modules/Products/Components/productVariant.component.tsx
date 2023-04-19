@@ -7,8 +7,9 @@ import Icon from "@Components/Icon/icon.component";
 import { DeleteIcon } from "@Constants/imageMapping.constants";
 import { useMemo, useState } from "react";
 import SelectBox from "@Components/SelectBox/selecBox.component";
+import { EmptyFunction } from "@Utils/common.utils";
 
-const ProductVariant = ({ formData, handleFormData }: any) => {
+const ProductVariant = ({ formData, handleFormData = EmptyFunction }: any) => {
   const [
     list,
     {
@@ -19,9 +20,14 @@ const ProductVariant = ({ formData, handleFormData }: any) => {
     },
   ] = useList<any>([]);
 
+  useUpdateEffect(() => {
+    handleFormData("options", list);
+  }, [list]);
+
   const disableAddNewOptions = useMemo(() => {
     if (!list?.length) return false;
-    return !(list[list?.length - 1] as any)?.title;
+    const lastItem: any = list[list?.length - 1];
+    return !lastItem?.title || !lastItem?.values?.length;
   }, [list]);
   return (
     <Container>
@@ -60,6 +66,10 @@ const ProductVariant = ({ formData, handleFormData }: any) => {
   );
 };
 
+const Variant = () => {
+  return <div>Variant</div>;
+};
+
 const ProductOption = ({ handleRemove, onChange }: any) => {
   const [formData, setFormData] = useState<any>({});
   useUpdateEffect(() => {
@@ -74,6 +84,17 @@ const ProductOption = ({ handleRemove, onChange }: any) => {
       };
     });
   };
+  const formatData = (values: any) => {
+    const newData = (values || [])?.map((value: any, index: number) => {
+      let data = {
+        title: value?.label,
+        slug: `slug_${index}_${value?.value}`,
+      };
+      return data;
+    });
+    return newData;
+  };
+
   return (
     <div className="flex items-center w-full gap-4">
       <InputField
@@ -88,10 +109,11 @@ const ProductOption = ({ handleRemove, onChange }: any) => {
         options={[]}
         label="Values"
         className="flex-1"
+        defaultInputValue={formData?.values}
         isCreatable
         isMultiple
-        onChange={(option) => {
-          console.log(option);
+        onBlur={(value) => {
+          handleChange("values", formatData(value));
         }}
       />
       <Button

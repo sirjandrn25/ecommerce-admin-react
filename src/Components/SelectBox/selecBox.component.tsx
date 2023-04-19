@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { KeyboardEventHandler, useState } from "react";
 import Select from "react-select";
 import { EmptyFunction } from "../../Utils/common.utils";
 import CreatableSelect from "react-select/creatable";
+import { useUpdateEffect } from "react-use";
 export type SelectOptionType = {
   label: string;
   value: string | number;
@@ -20,7 +21,17 @@ export type SelectBoxType = {
   errorMessage?: string;
   className?: string;
   isCreatable?: boolean;
+  onBlur?: (option: any) => void;
 };
+
+const components = {
+  DropdownIndicator: null,
+};
+
+const createOption = (label: string) => ({
+  label,
+  value: label,
+});
 
 const SelectBox = ({
   label,
@@ -34,9 +45,15 @@ const SelectBox = ({
   defaultTheme = {},
   className = "",
   isCreatable,
+  onBlur = EmptyFunction,
 }: SelectBoxType) => {
   const [value, setValue] = useState<any>(defaultInputValue);
+  const [inputValue, setInputValue] = useState<any>("");
   const error_color = "#dc143c";
+  useUpdateEffect(() => {
+    if (!isCreatable) return;
+    onChange(value);
+  }, [value]);
 
   const customStyles = {
     // option: (provided: any, state: any) => ({
@@ -74,6 +91,18 @@ const SelectBox = ({
     },
   };
 
+  const handleKeyDown: KeyboardEventHandler = (event) => {
+    if (!inputValue) return;
+    switch (event.key) {
+      case "Enter":
+      case "Tab":
+        setValue((prev: any) => [...prev, createOption(inputValue)]);
+
+        setInputValue("");
+        event.preventDefault();
+    }
+  };
+
   return (
     <div className={`flex flex-col select-box gap-1 text-sm ${className}`}>
       <div className={`${error ? "text-error" : ""} label-text font-sans`}>
@@ -83,11 +112,17 @@ const SelectBox = ({
       </div>
       {isCreatable && (
         <CreatableSelect
-          options={options}
-          isMulti={isMultiple}
-          onChange={(data) => onChange(data)}
-          styles={customStyles}
-          defaultInputValue={value && value.label}
+          components={components}
+          inputValue={inputValue}
+          isClearable
+          isMulti
+          menuIsOpen={false}
+          onChange={(newValue) => setValue(newValue)}
+          onInputChange={(newValue) => setInputValue(newValue)}
+          onKeyDown={handleKeyDown}
+          placeholder="Type something and press enter..."
+          value={value}
+          onBlur={() => onBlur(value)}
         />
       )}
       {!isCreatable && (

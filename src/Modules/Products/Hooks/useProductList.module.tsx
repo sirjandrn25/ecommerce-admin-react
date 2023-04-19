@@ -18,7 +18,7 @@ const useProductList = () => {
     queryKey: ["products", "list"],
     queryFn: fetchProducts,
   });
-  console.log({ products });
+
   return {
     products,
     isLoading,
