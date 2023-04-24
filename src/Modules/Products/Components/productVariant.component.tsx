@@ -2,22 +2,23 @@ import Button from "@Components/Button/button.component";
 import Container from "@Components/Container/container.component";
 import Icon from "@Components/Icon/icon.component";
 import InputField from "@Components/Input/inputField.component";
-import SelectBox, {
-  parseSelectBoxValue,
-} from "@Components/SelectBox/selecBox.component";
-import { DeleteIcon } from "@Constants/imageMapping.constants";
-import { EmptyFunction } from "@Utils/common.utils";
-import ModalUtil from "@Utils/modal.utils";
-import { useMemo, useState } from "react";
-import { useList, useUpdateEffect } from "react-use";
-import ContentWrapper from "./contentWrapper.component";
 import ModalContainer, {
   ModalBody,
   ModalFooter,
 } from "@Components/Modal/modalContainer.component";
+import SelectBox, {
+  parseSelectBoxValue,
+} from "@Components/SelectBox/selecBox.component";
+import { DeleteIcon } from "@Constants/imageMapping.constants";
+import ModalUtil from "@Utils/modal.utils";
+import { useMemo, useState } from "react";
+import { useList, useUpdateEffect } from "react-use";
+import useProduct from "../Hooks/useProduct.hook";
+import ContentWrapper from "./contentWrapper.component";
 
-const ProductVariant = ({ formData, handleFormData = EmptyFunction }: any) => {
+const ProductVariant = () => {
   const [list, { push, updateAt, removeAt }] = useList<any>([]);
+  const { handleFormData } = useProduct();
 
   useUpdateEffect(() => {
     handleFormData("options", list);
@@ -61,22 +62,18 @@ const ProductVariant = ({ formData, handleFormData = EmptyFunction }: any) => {
         >
           Add New Options
         </Button>
-        <VariantData {...{ handleFormData }} options={list} />
+        <VariantData options={list} />
       </ContentWrapper>
     </Container>
   );
 };
 
-const VariantData = ({
-  handleFormData,
-  data = [],
-  options = [],
-  callback,
-}: any) => {
+const VariantData = ({ data = [], options = [], callback }: any) => {
   const [list, { push, updateAt, removeAt }] = useList(data);
+  const { handleFormData } = useProduct();
   useUpdateEffect(() => {
     handleFormData("variants", list);
-  }, []);
+  }, [list]);
 
   const isDisabled = () => {
     if (!options.length) return true;
@@ -192,7 +189,6 @@ const Variant = ({ data = {}, options, callback }: any) => {
             const value = formData?.option_values
               ? formData?.option_values[option?.title]
               : "";
-            console.log(formData);
 
             return (
               <SelectBox

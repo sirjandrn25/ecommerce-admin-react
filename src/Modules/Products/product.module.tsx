@@ -1,25 +1,20 @@
+import Button from "@Components/Button/button.component";
 import Container from "@Components/Container/container.component";
 import InputField from "@Components/Input/inputField.component";
-import { useState } from "react";
 import ContentWrapper from "./Components/contentWrapper.component";
 import ProductVariant from "./Components/productVariant.component";
-import Button from "@Components/Button/button.component";
+import useProduct from "./Hooks/useProduct.hook";
 
 const ProductModule = () => {
-  const [formData, setFormData] = useState();
-  const handleFormData = (key: string, value: any) => {
-    setFormData((prev: any) => {
-      return {
-        ...prev,
-        [key]: value,
-      };
-    });
-  };
+  const { formData, handleFormData, handleSubmit } = useProduct();
+
   return (
     <Container>
       <div className="flex flex-col gap-4 p-4 px-8 ">
         <div className="flex items-center justify-end w-full">
-          <Button>Create Product</Button>
+          <Button onClick={handleSubmit} progress>
+            Create Product
+          </Button>
         </div>
         <GeneralInformation {...{ handleFormData, formData }} />
         <ProductVariant />
