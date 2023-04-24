@@ -8,7 +8,7 @@ const ModalContainer = ({
   title = "",
   className = "",
   titleClassName = "",
-  closeIcon,
+  closeIcon = true,
 }: any) => {
   return (
     <div className={`bg-base-100 relative ${className}`}>
@@ -17,12 +17,14 @@ const ModalContainer = ({
           {title}
         </div>
       )}
-      <div
-        onClick={() => ModalUtil.close()}
-        className="absolute p-2 border rounded-full cursor-pointer top-2 right-2 border-error active:bg-error/20"
-      >
-        <Icon source={CloseIcon} isReactIcon iconColor="text-error" />
-      </div>
+      {closeIcon && (
+        <div
+          onClick={() => ModalUtil.close()}
+          className="absolute p-2 border rounded-full cursor-pointer top-2 right-2 border-error active:bg-error/20"
+        >
+          <Icon source={CloseIcon} isReactIcon iconColor="text-error" />
+        </div>
+      )}
       {children}
     </div>
   );

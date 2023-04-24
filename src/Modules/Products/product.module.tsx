@@ -3,6 +3,7 @@ import InputField from "@Components/Input/inputField.component";
 import { useState } from "react";
 import ContentWrapper from "./Components/contentWrapper.component";
 import ProductVariant from "./Components/productVariant.component";
+import Button from "@Components/Button/button.component";
 
 const ProductModule = () => {
   const [formData, setFormData] = useState();
@@ -17,6 +18,9 @@ const ProductModule = () => {
   return (
     <Container>
       <div className="flex flex-col gap-4 p-4 px-8 ">
+        <div className="flex items-center justify-end w-full">
+          <Button>Create Product</Button>
+        </div>
         <GeneralInformation {...{ handleFormData, formData }} />
         <ProductVariant />
       </div>
