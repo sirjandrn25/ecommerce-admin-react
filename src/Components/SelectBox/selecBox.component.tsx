@@ -1,6 +1,6 @@
 import React, { KeyboardEventHandler, useState } from "react";
 import Select from "react-select";
-import { EmptyFunction } from "../../Utils/common.utils";
+import { EmptyFunction, GetObjectFromArray } from "../../Utils/common.utils";
 import CreatableSelect from "react-select/creatable";
 import { useUpdateEffect } from "react-use";
 export type SelectOptionType = {
@@ -103,6 +103,12 @@ const SelectBox = ({
     }
   };
 
+  const GetLabel = () => {
+    const data = GetObjectFromArray(options, "value", defaultInputValue);
+
+    return data?.label;
+  };
+
   return (
     <div className={`flex flex-col select-box gap-1 text-sm ${className}`}>
       <div className={`${error ? "text-error" : ""} label-text font-sans`}>
@@ -130,8 +136,9 @@ const SelectBox = ({
           options={options}
           isMulti={isMultiple}
           onChange={(data) => onChange(data)}
-          defaultInputValue={value && value.label}
+          defaultInputValue={GetLabel()}
           styles={customStyles}
+          // value={GetLabel()}
         />
       )}
       {error && errorMessage && (

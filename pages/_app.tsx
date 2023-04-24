@@ -1,13 +1,15 @@
 import type { AppProps } from "next/app";
 import "../styles/globals.scss";
 
-import dynamic from "next/dynamic";
-import SlidingPaneUtil from "@Utils/slidingPane.utils";
 import SlidingPaneWrapper from "@Components/SlidingPane/slidingPaneWrapper.component";
+import SlidingPaneUtil from "@Utils/slidingPane.utils";
+import dynamic from "next/dynamic";
 
-import { ProSidebarProvider } from "react-pro-sidebar";
+import ModalWrapper from "@Components/Modal/modalWrapper.component";
+import ModalUtil from "@Utils/modal.utils";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy } from "react";
+import { ProSidebarProvider } from "react-pro-sidebar";
 const queryClient = new QueryClient();
 
 const DashboardWrapper = lazy(
@@ -37,6 +39,13 @@ export default function App({ Component, pageProps }: AppProps) {
             ref={(ref) => {
               if (ref) {
                 SlidingPaneUtil.register(ref);
+              }
+            }}
+          />
+          <ModalWrapper
+            ref={(ref) => {
+              if (ref) {
+                ModalUtil.register(ref);
               }
             }}
           />
