@@ -4,6 +4,9 @@ import InputField from "@Components/Input/inputField.component";
 import ContentWrapper from "./Components/contentWrapper.component";
 import ProductVariant from "./Components/productVariant.component";
 import useProduct from "./Hooks/useProduct.hook";
+import useCategory from "./Hooks/useCategory.hook";
+import AsyncSelectBox from "@Components/SelectBox/asyncSelectBox.component";
+import { openAddCategory } from "@Utils/function.utils";
 
 const ProductModule = () => {
   const { formData, handleFormData, handleSubmit } = useProduct();
@@ -40,12 +43,18 @@ const GeneralInformation = ({ formData, handleFormData }: any) => {
           label="Title"
           isRequired
         />
+
         <InputField
           onBlur={(value) => {
             handleFormData("sub_title", value);
           }}
           label="Subtitle"
           placeholder="Enter Subtitle"
+        />
+        <AsyncSelectBox
+          addNew={() => openAddCategory()}
+          end_point="categories"
+          label="Categories"
         />
 
         <InputField

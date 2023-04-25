@@ -1,17 +1,20 @@
-import React, { KeyboardEventHandler, useState } from "react";
+import Icon from "@Components/Icon/icon.component";
+import { PlusIcon } from "@Constants/imageMapping.constants";
+import { KeyboardEventHandler, useState } from "react";
 import Select from "react-select";
-import { EmptyFunction, GetObjectFromArray } from "../../Utils/common.utils";
+import AsyncSelect from "react-select/async";
 import CreatableSelect from "react-select/creatable";
 import { useUpdateEffect } from "react-use";
+import { EmptyFunction, GetObjectFromArray } from "../../Utils/common.utils";
 export type SelectOptionType = {
   label: string;
   value: string | number;
   data?: any;
 };
 
-export type SelectBoxType = {
+export interface SelectBoxType {
   label?: string;
-  options: SelectOptionType[];
+  options?: SelectOptionType[];
   onChange?: (value: any) => any;
   error?: boolean;
   isMultiple?: boolean;
@@ -22,7 +25,11 @@ export type SelectBoxType = {
   className?: string;
   isCreatable?: boolean;
   onBlur?: (option: any) => void;
-};
+  loadOptions?: (search?: any) => void;
+  async?: boolean;
+  isSearchable?: boolean;
+  addNew?: () => void;
+}
 
 const components = {
   DropdownIndicator: null,
@@ -35,7 +42,7 @@ const createOption = (label: string) => ({
 
 const SelectBox = ({
   label,
-  options,
+  options = [],
   onChange = EmptyFunction,
   error = false,
   errorMessage = "",
@@ -45,16 +52,85 @@ const SelectBox = ({
   defaultTheme = {},
   className = "",
   isCreatable,
+  async,
+  loadOptions,
+  isSearchable,
+  addNew,
   onBlur = EmptyFunction,
 }: SelectBoxType) => {
   const [value, setValue] = useState<any>(defaultInputValue);
   const [inputValue, setInputValue] = useState<any>("");
-  const error_color = "#dc143c";
+
   useUpdateEffect(() => {
     if (!isCreatable) return;
     onChange(value);
   }, [value]);
 
+  const handleKeyDown: KeyboardEventHandler = (event) => {
+    if (!inputValue) return;
+    switch (event.key) {
+      case "Enter":
+      case "Tab":
+        setValue((prev: any) => [...prev, createOption(inputValue)]);
+
+        setInputValue("");
+        event.preventDefault();
+    }
+  };
+
+  return (
+    <div className={`flex flex-col select-box gap-1 text-sm ${className}`}>
+      <div className={`${error ? "text-error" : ""} label-text font-sans`}>
+        <span>{label}</span>{" "}
+        {isRequired && <span className="text-error">*</span>}
+      </div>
+      <RenderSelectBox
+        {...{
+          inputValue,
+          setValue,
+          setInputValue,
+          handleKeyDown,
+          value,
+          onBlur,
+          isCreatable,
+          options,
+          onChange,
+          defaultInputValue,
+          error,
+          isMultiple,
+          defaultTheme,
+          async,
+          loadOptions,
+          isSearchable,
+          addNew,
+        }}
+      />
+      {error && errorMessage && (
+        <div className="pl-1 text-xs text-error">{errorMessage}</div>
+      )}
+    </div>
+  );
+};
+
+const RenderSelectBox = ({
+  inputValue,
+  setValue,
+  setInputValue,
+  handleKeyDown,
+  value,
+  onBlur,
+  isCreatable,
+  options,
+  onChange,
+  defaultInputValue,
+  error,
+  async,
+  loadOptions,
+  addNew,
+  isSearchable,
+  ...rest
+}: any) => {
+  const error_color = "#dc143c";
   const customStyles = {
     // option: (provided: any, state: any) => ({
     // 	...provided,
@@ -90,61 +166,65 @@ const SelectBox = ({
       return { ...provided, opacity, transition };
     },
   };
-
-  const handleKeyDown: KeyboardEventHandler = (event) => {
-    if (!inputValue) return;
-    switch (event.key) {
-      case "Enter":
-      case "Tab":
-        setValue((prev: any) => [...prev, createOption(inputValue)]);
-
-        setInputValue("");
-        event.preventDefault();
-    }
-  };
-
   const GetLabel = () => {
     const data = GetObjectFromArray(options, "value", defaultInputValue);
 
     return data?.label;
   };
 
-  return (
-    <div className={`flex flex-col select-box gap-1 text-sm ${className}`}>
-      <div className={`${error ? "text-error" : ""} label-text font-sans`}>
-        {" "}
-        <span>{label}</span>{" "}
-        {isRequired && <span className="text-error">*</span>}
-      </div>
-      {isCreatable && (
-        <CreatableSelect
-          components={components}
-          inputValue={inputValue}
-          isClearable
-          isMulti
-          menuIsOpen={false}
-          onChange={(newValue) => setValue(newValue)}
-          onInputChange={(newValue) => setInputValue(newValue)}
-          onKeyDown={handleKeyDown}
-          placeholder="Type something and press enter..."
-          value={value}
-          onBlur={() => onBlur(value)}
-        />
-      )}
-      {!isCreatable && (
-        <Select
-          options={options}
-          isMulti={isMultiple}
-          onChange={(data) => onChange(data)}
-          defaultInputValue={GetLabel()}
+  if (async) {
+    return (
+      <div className="flex items-center w-full">
+        <AsyncSelect
+          isSearchable={isSearchable}
+          loadOptions={loadOptions}
           styles={customStyles}
-          // value={GetLabel()}
+          cacheOptions
+          className="flex-1 border-r-0"
         />
-      )}
-      {error && errorMessage && (
-        <div className="pl-1 text-xs text-error">{errorMessage}</div>
-      )}
-    </div>
+
+        {addNew && (
+          <Icon
+            source={PlusIcon}
+            className="flex items-center p-2 justify-center w-[35px] h-[38px] border border-l-0 bg-base-100"
+            size={20}
+            iconColor="text-info"
+            onClick={addNew}
+          />
+        )}
+      </div>
+    );
+  }
+  if (isCreatable) {
+    return (
+      <CreatableSelect
+        components={components}
+        inputValue={inputValue}
+        isClearable
+        isMulti
+        menuIsOpen={false}
+        onChange={(newValue) => setValue(newValue)}
+        onInputChange={(newValue) => setInputValue(newValue)}
+        onKeyDown={handleKeyDown}
+        placeholder="Type something and press enter..."
+        value={value}
+        onBlur={() => onBlur(value)}
+        styles={customStyles}
+      />
+    );
+  }
+
+  return (
+    <Select
+      options={options}
+      onChange={(data) => onChange(data)}
+      defaultInputValue={GetLabel()}
+      styles={customStyles}
+      {...rest}
+      isSearchable={isSearchable}
+
+      // value={GetLabel()}
+    />
   );
 };
 

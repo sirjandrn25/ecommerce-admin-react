@@ -1,4 +1,5 @@
 import { EmptyFunction } from "@Utils/common.utils";
+import { sendRequest } from "@Utils/service.utils";
 import { useDispatch, useSelector } from "react-redux";
 import { handleChangeData } from "src/Store/Slicers/Product/product.slicer";
 import { RootState } from "src/Store/store";
@@ -30,14 +31,14 @@ const useProduct = () => {
   };
 
   const handleSubmit = async (next: any = EmptyFunction) => {
-    console.log(sanitizeData());
-    // const { success, response } = await sendRequest({
-    //   end_point: "/products",
-    //   method: "post",
-    //   classParams: {
-    //     ...formData,
-    //   },
-    // });
+    const { success, response } = await sendRequest({
+      end_point: "/products",
+      method: "post",
+      classParams: {
+        ...sanitizeData(),
+      },
+    });
+
     next();
   };
   return {
