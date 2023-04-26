@@ -29,6 +29,7 @@ export const sendRequest = async ({
 }: sendRequestProps) => {
   try {
     const base_url = `${BASE_URL}/${end_point}`;
+
     const full_url = document_id ? `${base_url}/${document_id}` : base_url;
 
     let params = {
@@ -36,6 +37,7 @@ export const sendRequest = async ({
       data: classParams,
       url: full_url,
     };
+
     if (attachSessionId) {
       const token = getToken();
       if (!token) {
@@ -48,10 +50,12 @@ export const sendRequest = async ({
       const config = {
         headers: { Authorization: `${token}` },
       };
+
       params = {
         ...params,
         ...config,
       };
+      console.log({ params });
     }
 
     const response = await axios({ ...params });

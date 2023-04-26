@@ -181,6 +181,9 @@ const RenderSelectBox = ({
           styles={customStyles}
           cacheOptions
           className="flex-1 border-r-0"
+          onChange={onChange}
+          defaultOptions={options}
+          defaultInputValue={GetLabel()}
         />
 
         {addNew && (

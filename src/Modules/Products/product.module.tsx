@@ -55,6 +55,10 @@ const GeneralInformation = ({ formData, handleFormData }: any) => {
           addNew={() => openAddCategory()}
           end_point="categories"
           label="Categories"
+          defaultInputValue={formData?.category_id}
+          onChange={(option) => {
+            handleFormData("category_id", option.value);
+          }}
         />
 
         <InputField

@@ -24,3 +24,10 @@ export const GetObjectFromArray = (arr: any[], key: string, value: any) => {
   }
   return {};
 };
+
+export const IsEmptyObject = (obj: any) => {
+  if (typeof obj === "object") {
+    return !!Object.values(obj).length;
+  }
+  return false;
+};
