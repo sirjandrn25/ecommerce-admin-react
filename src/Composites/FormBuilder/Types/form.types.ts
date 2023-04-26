@@ -21,7 +21,9 @@ export type SchemaInputType = SchemaBaseType & {
 };
 
 export type SelectSchemaType = SchemaBaseType & {
-  type: "select" | "radio";
+  type: "select" | "radio" | "async_select";
+  end_point?: string;
+  document_id?: number;
 } & SelectBoxType;
 
 export type ObjectSchemaType = SchemaBaseType & {

@@ -1,7 +1,3 @@
-import Button from "@Components/Button/button.component";
-import ModalContainer, {
-  ModalBody,
-} from "@Components/Modal/modalContainer.component";
 import { FormInterface } from "@Composites/FormBuilder/Types/form.types";
 import FormBuilder from "@Composites/FormBuilder/formBuilder";
 import { EmptyFunction } from "@Utils/common.utils";
@@ -16,11 +12,13 @@ const AddCategoryForm = ({ data, callback }: any) => {
         label: "Name",
         type: "text",
         isRequired: true,
+        placeholder: "Enter name",
       },
       {
         name: "parent_id",
         label: "Parent",
-        type: "text",
+        type: "async_select",
+        end_point: "categories",
       },
     ],
     handleSubmit: async (values: any, next: any = EmptyFunction) => {
@@ -36,16 +34,8 @@ const AddCategoryForm = ({ data, callback }: any) => {
       }
       next();
     },
-
-    submitLabel: "Login",
   };
-  return (
-    <ModalContainer title={`${isEdit ? "Edit Category" : "Add Category"}`}>
-      <ModalBody>
-        <FormBuilder {...formSchema} />
-      </ModalBody>
-    </ModalContainer>
-  );
+  return <FormBuilder {...formSchema} />;
 };
 
 export default AddCategoryForm;

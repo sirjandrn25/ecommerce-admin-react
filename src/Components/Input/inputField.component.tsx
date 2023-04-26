@@ -72,7 +72,7 @@ const InputField = ({
     !error && "focus:border-info  focus:shadow-md rounded-[4px]"
   } focus:border-2 ${inputClassName}`;
   return (
-    <div className={`flex flex-col  ${className}`}>
+    <div className={`flex flex-col gap-1  ${className}`}>
       {label && (
         <label
           htmlFor="input_id"

@@ -8,6 +8,7 @@ export const openAddCategory = (
 ) => {
   return SlidingPaneUtil.open({
     component: AddCategoryForm,
+    headingTitle: "Add Category",
     props: {
       data,
       callback: () => {

@@ -67,7 +67,9 @@ const FormBuilder = forwardRef(
             <Element
               {...field}
               onChange={(value: any) => {
-                handleFormData(formDataKey, value);
+                if (["select", "async_select"].includes(field?.type)) {
+                  handleFormData(formDataKey, value?.value);
+                } else handleFormData(formDataKey, value);
               }}
               value={formData[field?.name]}
               error={hasError(field.name)}
@@ -85,7 +87,7 @@ const FormBuilder = forwardRef(
       });
     }, [fields, renderSchemaElement]);
     const layoutClass = useMemo(() => {
-      let className = `gap-4 grid`;
+      let className = `gap-4 grid `;
       switch (layout) {
         case "two":
           return `${className} grid-cols-2`;
