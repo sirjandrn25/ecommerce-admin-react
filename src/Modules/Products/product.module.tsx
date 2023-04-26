@@ -46,7 +46,7 @@ const GeneralInformation = ({ formData, handleFormData }: any) => {
 
         <InputField
           onBlur={(value) => {
-            handleFormData("sub_title", value);
+            handleFormData("subtitle", value);
           }}
           label="Subtitle"
           placeholder="Enter Subtitle"
