@@ -111,6 +111,7 @@ const useForm = (
 
   const handleFormData = (key: string, value: any) => {
     realTimeValidate && verify();
+
     setFormData((prev: any) => {
       return {
         ...prev,
@@ -129,6 +130,7 @@ const useForm = (
 
   const onSubmit = (next: any = EmptyFunction) => {
     const isValid = verify();
+
     if (isValid) {
       handleSubmit(sanitizeFormData(formData), next);
       return;

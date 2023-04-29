@@ -55,7 +55,6 @@ export const sendRequest = async ({
         ...params,
         ...config,
       };
-      console.log({ params });
     }
 
     const response = await axios({ ...params });

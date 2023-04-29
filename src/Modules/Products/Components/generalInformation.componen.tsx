@@ -8,11 +8,17 @@ import { useRef } from "react";
 import { useWizard } from "react-use-wizard";
 import useProduct from "../Hooks/useProduct.hook";
 import WizardFooter from "./wizardFooter.component";
+import { EmptyFunction } from "@Utils/common.utils";
 
 const GeneralInformation = () => {
   const { formData, handleFormData } = useProduct();
   const formRef = useRef<any>();
   const { nextStep } = useWizard();
+
+  const handleSubmit = (values: any, next = EmptyFunction) => {
+    console.log({ values, next });
+    next();
+  };
   const formSchema: FormInterface = {
     fields: [
       {
@@ -40,6 +46,7 @@ const GeneralInformation = () => {
     ],
     layout: "two",
     hiddenSubmit: true,
+    handleSubmit,
   };
 
   return (
@@ -49,10 +56,18 @@ const GeneralInformation = () => {
       closeIcon={false}
     >
       <ModalBody>
-        <FormBuilder {...formSchema} />
+        <FormBuilder ref={formRef} {...formSchema} />
       </ModalBody>
       <ModalFooter className="!bg-base-100 border-t">
-        <WizardFooter {...{ nextStep }} />
+        <WizardFooter
+          {...{
+            nextStep: (next = EmptyFunction) => {
+              const onSubmit = formRef?.current?.onSubmit || EmptyFunction;
+              onSubmit(next);
+            },
+            nextProgress: true,
+          }}
+        />
       </ModalFooter>
     </ModalContainer>
   );

@@ -68,10 +68,12 @@ const FormBuilder = forwardRef(
               {...field}
               onChange={(value: any) => {
                 if (
-                  ["select", "async_select"].includes(field?.type || "select")
+                  ["select", "async_select"].includes(field?.type as string)
                 ) {
                   handleFormData(formDataKey, value?.value);
-                } else handleFormData(formDataKey, value);
+                } else {
+                  handleFormData(formDataKey, value);
+                }
               }}
               value={formData[field?.name]}
               error={hasError(field.name)}

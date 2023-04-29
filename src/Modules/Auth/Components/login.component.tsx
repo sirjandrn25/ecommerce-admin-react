@@ -16,7 +16,7 @@ const loginApi = async (loginData: any) => {
 
 const Login = () => {
   const signIn = useSignIn();
-  const { navigation, pressBack } = useNavigation();
+  const { navigation } = useNavigation();
   const { mutate } = useMutation(
     (loginData, next = EmptyFunction) => {
       next();
