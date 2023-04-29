@@ -1,59 +1,15 @@
 import Button from "@Components/Button/button.component";
 import { FormInterface } from "@Composites/FormBuilder/Types/form.types";
 import FormBuilder from "@Composites/FormBuilder/formBuilder";
-import { BASE_URL } from "@Constants/api.constant";
 import { AUTH_ROUTE } from "@Constants/route.constant";
 import useNavigation from "@Hooks/useNavigation.hook";
 import { EmptyFunction } from "@Utils/common.utils";
-import { serverErrorToast } from "@Utils/toast.utils";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import { sendRequest } from "@Utils/service.utils";
 import { useSignIn } from "react-auth-kit";
-
-const loginApi = async (loginData: any) => {
-  return await axios.post(`${BASE_URL}/auth/login`, loginData);
-};
 
 const Login = () => {
   const signIn = useSignIn();
   const { navigation } = useNavigation();
-  const { mutate } = useMutation(
-    (loginData, next = EmptyFunction) => {
-      next();
-      return loginApi(loginData);
-    },
-    {
-      onSuccess: (response, next: any) => {
-        const { access_token, refresh_token, user } = response?.data || {};
-
-        if (
-          signIn({
-            token: access_token,
-            expiresIn: 3,
-            tokenType: "Bearer",
-            authState: user,
-            refreshToken: refresh_token, // Only if you are using refreshToken feature
-            refreshTokenExpireIn: 60, // Only if you are using refreshToken feature
-          })
-        ) {
-          // Only if you are using refreshToken feature
-          // Redirect or do-something
-          navigation({
-            pathname: "/",
-          });
-        } else {
-          //Throw error
-        }
-        next();
-      },
-      onError: ({ response }) => {
-        const { errors } = response.data;
-        for (let error of errors) {
-          serverErrorToast(error);
-        }
-      },
-    }
-  );
 
   const formSchema: FormInterface = {
     fields: [
@@ -70,8 +26,37 @@ const Login = () => {
         isRequired: true,
       },
     ],
-    handleSubmit: (values: any, next: any = EmptyFunction) =>
-      mutate(values, next),
+    handleSubmit: async (values: any, next: any = EmptyFunction) => {
+      const { success, response } = await sendRequest({
+        end_point: "auth/login",
+        method: "post",
+        classParams: {
+          ...values,
+        },
+      });
+      if (success) {
+        const { access_token, refresh_token, user } = response || {};
+
+        if (
+          signIn({
+            token: access_token,
+            expiresIn: 3,
+            tokenType: "Bearer",
+            authState: user,
+            refreshToken: refresh_token, // Only if you are using refreshToken feature
+            refreshTokenExpireIn: 60, // Only if you are using refreshToken feature
+          })
+        ) {
+          // Only if you are using refreshToken feature
+          // Redirect or do-something
+          navigation({
+            pathname: "/",
+          });
+        }
+      }
+      next();
+    },
+
     submitLabel: "Login",
   };
   return (
