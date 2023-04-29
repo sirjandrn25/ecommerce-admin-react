@@ -7,6 +7,7 @@ import useNavigation from "@Hooks/useNavigation.hook";
 
 const ProductListModule = () => {
   const { navigation } = useNavigation();
+
   const listing_props: GenericListingInterface = {
     name: "Product Lists",
     end_point: PRODUCT_API_ROUTE,

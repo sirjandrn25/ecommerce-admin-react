@@ -1,5 +1,12 @@
+import { v4 as uuidv4 } from "uuid";
+
 export const EmptyFunction = () => {
   //empty function
+};
+
+export const getUuid4 = () => {
+  let myuuid = uuidv4();
+  return myuuid;
 };
 
 export const resolveNavigation = (path: string) => {

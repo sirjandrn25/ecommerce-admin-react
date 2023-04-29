@@ -33,9 +33,9 @@ const FormBuilder = forwardRef(
     );
     useImperativeHandle(
       ref,
-      () => {
-        onSubmit: onSubmit;
-      },
+      () => ({
+        onSubmit,
+      }),
       [onSubmit]
     );
 
@@ -61,13 +61,15 @@ const FormBuilder = forwardRef(
               : formDataKey
           );
         }
-        const Element = getSchemaElement(field?.type);
+        const Element = getSchemaElement(field?.type || "text");
         return (
           <div key={field.name || index} className={field.name}>
             <Element
               {...field}
               onChange={(value: any) => {
-                if (["select", "async_select"].includes(field?.type)) {
+                if (
+                  ["select", "async_select"].includes(field?.type || "select")
+                ) {
                   handleFormData(formDataKey, value?.value);
                 } else handleFormData(formDataKey, value);
               }}
@@ -116,7 +118,7 @@ const FormBuilder = forwardRef(
           <div className={layoutClass}>{renderSchema()}</div>
           {rest?.children ? (
             children({ onSubmit, error, formData })
-          ) : (
+          ) : rest?.hiddenSubmit ? null : (
             <Button progress onClick={onSubmit}>
               {submitLabel || "Save"}
             </Button>

@@ -17,7 +17,7 @@ export type SchemaBaseType = InputBaseType & {
 };
 
 export type SchemaInputType = SchemaBaseType & {
-  type: "text" | "number" | "password" | "email" | "checkbox" | "textarea";
+  type?: "text" | "number" | "password" | "email" | "checkbox" | "textarea";
 };
 
 export type SelectSchemaType = SchemaBaseType & {
@@ -49,4 +49,5 @@ export interface FormInterface {
   realTimeValidate?: boolean;
   children?: (data: childrenType) => void;
   submitLabel?: string | any;
+  hiddenSubmit?: boolean;
 }

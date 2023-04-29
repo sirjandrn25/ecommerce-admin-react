@@ -29,6 +29,7 @@ export interface SelectBoxType {
   async?: boolean;
   isSearchable?: boolean;
   addNew?: () => void;
+  placeholder?: string;
 }
 
 const components = {
@@ -57,6 +58,7 @@ const SelectBox = ({
   isSearchable,
   addNew,
   onBlur = EmptyFunction,
+  placeholder = "",
 }: SelectBoxType) => {
   const [value, setValue] = useState<any>(defaultInputValue);
   const [inputValue, setInputValue] = useState<any>("");
@@ -103,6 +105,7 @@ const SelectBox = ({
           loadOptions,
           isSearchable,
           addNew,
+          placeholder,
         }}
       />
       {error && errorMessage && (
@@ -128,6 +131,7 @@ const RenderSelectBox = ({
   loadOptions,
   addNew,
   isSearchable,
+  placeholder,
   ...rest
 }: any) => {
   const error_color = "#dc143c";
@@ -184,6 +188,7 @@ const RenderSelectBox = ({
           onChange={onChange}
           defaultOptions={options}
           defaultInputValue={GetLabel()}
+          placeholder={"Search ..."}
         />
 
         {addNew && (
@@ -209,7 +214,7 @@ const RenderSelectBox = ({
         onChange={(newValue) => setValue(newValue)}
         onInputChange={(newValue) => setInputValue(newValue)}
         onKeyDown={handleKeyDown}
-        placeholder="Type something and press enter..."
+        placeholder={placeholder}
         value={value}
         onBlur={() => onBlur(value)}
         styles={customStyles}
@@ -223,6 +228,7 @@ const RenderSelectBox = ({
       onChange={(data) => onChange(data)}
       defaultInputValue={GetLabel()}
       styles={customStyles}
+      placeholder={placeholder}
       {...rest}
       isSearchable={isSearchable}
 

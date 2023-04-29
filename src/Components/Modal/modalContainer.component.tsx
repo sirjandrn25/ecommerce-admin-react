@@ -31,13 +31,13 @@ const ModalContainer = ({
 };
 
 export const ModalBody = ({ children, className = "" }: any) => {
-  return <div className={`p-5 pb-20  ${className}`}>{children}</div>;
+  return <div className={`p-5   ${className}`}>{children}</div>;
 };
 
 export const ModalFooter = ({ children, className = "" }: any) => {
   return (
     <div
-      className={`bg-base-200  p-4 flex items-center absolute bottom-0 right-0 left-0 justify-end ${className}`}
+      className={`bg-base-200  p-4 flex items-center justify-end ${className}`}
     >
       {children}
     </div>
