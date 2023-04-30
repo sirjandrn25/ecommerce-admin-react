@@ -13,10 +13,12 @@ import useProduct from "../Hooks/useProduct.hook";
 import WizardFooter from "./wizardFooter.component";
 import { DeleteIcon } from "@Constants/imageMapping.constants";
 import Icon from "@Components/Icon/icon.component";
+import { sendRequest } from "@Utils/service.utils";
 
 const ProductOption = () => {
   const { formData, handleFormData } = useProduct();
   const { previousStep, nextStep } = useWizard();
+
   const [list, { push, updateAt, removeAt }] = useList<any>(
     formData?.values || [
       {
@@ -30,6 +32,47 @@ const ProductOption = () => {
     if (!list?.length) return false;
     return !list[list?.length - 1]?.title;
   }, [list]);
+
+  const sanitizeData = () => {
+    return list.map((item) => {
+      const newData = { ...item };
+      newData.values = item.values.map((value: any) => ({
+        name: value?.value,
+      }));
+
+      newData.product_id = formData?.id;
+      return newData;
+    });
+  };
+
+  const promiseSubmit = async (option: any = {}) =>
+    new Promise(async (resolve, reject) => {
+      const { success, response } = await sendRequest({
+        end_point: "product-options",
+        method: "post",
+        classParams: {
+          ...option,
+        },
+      });
+      if (success) resolve(response);
+      else reject({});
+    });
+
+  const handleSubmit = async (next: any = EmptyFunction) => {
+    let promises = sanitizeData().map((option) => promiseSubmit(option));
+
+    Promise.all(promises)
+      .then((result) => {
+        handleFormData("options", result);
+        nextStep();
+        next();
+      })
+      .catch((error) => {
+        console.log({ error });
+        next();
+      });
+    next();
+  };
 
   return (
     <ModalContainer
@@ -66,7 +109,7 @@ const ProductOption = () => {
         </div>
       </ModalBody>
       <ModalFooter className="!bg-base-100 border-t">
-        <WizardFooter {...{ previousStep, nextStep }} />
+        <WizardFooter {...{ previousStep, nextStep: handleSubmit }} />
       </ModalFooter>
     </ModalContainer>
   );

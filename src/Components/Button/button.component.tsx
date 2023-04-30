@@ -92,7 +92,7 @@ const Button = ({
   return (
     <button
       disabled={disabled}
-      className={`btn  ${buttonShape} ${className} } ${buttonClass} `}
+      className={`py-0 px-4 btn  ${buttonShape} ${className} } ${buttonClass} `}
       onClick={handleClick}
     >
       {children}

@@ -9,14 +9,27 @@ import { useWizard } from "react-use-wizard";
 import useProduct from "../Hooks/useProduct.hook";
 import WizardFooter from "./wizardFooter.component";
 import { EmptyFunction } from "@Utils/common.utils";
+import { sendRequest } from "@Utils/service.utils";
 
 const GeneralInformation = () => {
-  const { formData, handleFormData } = useProduct();
+  const { formData, handleFormData, setFormData } = useProduct();
   const formRef = useRef<any>();
   const { nextStep } = useWizard();
 
-  const handleSubmit = (values: any, next = EmptyFunction) => {
-    console.log({ values, next });
+  const handleSubmit = async (values: any, next = EmptyFunction) => {
+    const { success, response } = await sendRequest({
+      end_point: "products",
+      method: "post",
+      classParams: {
+        ...values,
+      },
+    });
+    if (success) {
+      nextStep();
+      setFormData({ ...response });
+    } else {
+      console.log({ response });
+    }
     next();
   };
   const formSchema: FormInterface = {
@@ -32,7 +45,7 @@ const GeneralInformation = () => {
         label: "Sub title",
       },
       {
-        name: "categories",
+        name: "category_id",
         placeholder: "Enter categories",
         label: "Categories",
         type: "async_select",
@@ -51,7 +64,7 @@ const GeneralInformation = () => {
 
   return (
     <ModalContainer
-      title="Product Options"
+      title="General Information"
       titleClassName="!bg-base-100 border-b"
       closeIcon={false}
     >

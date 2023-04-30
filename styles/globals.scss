@@ -27,6 +27,13 @@
 	}
 }
 
+.col-flex{
+	@apply flex flex-col;
+}
+.row-flex{
+	@apply flex flex-row;
+}
+
 .generic_table_wrapper {
 	@apply inline-block min-w-full shadow bg-base-100 rounded-lg overflow-hidden;
 	table {

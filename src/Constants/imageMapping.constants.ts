@@ -18,3 +18,8 @@ export { BiChevronLeft as ArrowChevronLeft } from "react-icons/bi";
 export { BiDownload as DownLineIcon } from "react-icons/bi";
 export { BiTrash as DeleteIcon } from "react-icons/bi";
 export { FaPlus as PlusIcon } from "react-icons/fa";
+export { BsCurrencyEuro as EuroIcon } from "react-icons/bs";
+export { BsCurrencyDollar as DollorIcon } from "react-icons/bs";
+
+export { BsCurrencyPound as PoundIcon } from "react-icons/bs";
+export { BiRupee as RupeeIcon } from "react-icons/bi";

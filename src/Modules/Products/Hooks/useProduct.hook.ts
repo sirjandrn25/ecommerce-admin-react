@@ -41,10 +41,14 @@ const useProduct = () => {
 
     next();
   };
+  const setFormData = (data: any) => {
+    dispatch(handleChangeData(data));
+  };
   return {
     handleFormData,
     formData,
     handleSubmit,
+    setFormData,
   };
 };
 

@@ -38,3 +38,9 @@ export const IsEmptyObject = (obj: any) => {
   }
   return false;
 };
+
+export const Capitalize = (str: string = "") => {
+  if (!str) return str;
+  const firstElement = str[0];
+  return `${firstElement.toUpperCase()}${str.slice(1, str?.length)}`;
+};

@@ -1,7 +1,7 @@
 import Button from "@Components/Button/button.component";
 import React from "react";
 
-const WizardFooter = ({ nextStep, previousStep, nextProgress }: any) => {
+const WizardFooter = ({ nextStep, previousStep, nextProgress = true }: any) => {
   return (
     <div className="flex items-center gap-4">
       {previousStep && (
