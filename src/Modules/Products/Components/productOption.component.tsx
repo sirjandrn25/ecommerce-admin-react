@@ -68,7 +68,6 @@ const ProductOption = () => {
         next();
       })
       .catch((error) => {
-        console.log({ error });
         next();
       });
     next();

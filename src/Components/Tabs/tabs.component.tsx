@@ -85,8 +85,10 @@ const Tabs = ({
   const TabItem = ({ item, index }: any) => {
     return (
       <a
-        className={`tab tab-bordered  ${
-          checkActiveTab(item?.key, index) ? "tab-active !border-info" : ""
+        className={`tab  tab-bordered  ${
+          checkActiveTab(item?.key, index)
+            ? "tab-active !border-info"
+            : "border-white"
         }`}
         onClick={() => storeActiveTabKey(item?.key, index)}
       >
@@ -111,7 +113,11 @@ const Tabs = ({
 
   return (
     <div className={`w-full h-full gap-4 col-flex bg-base-200 ${className}`}>
-      <div className={`tabs ${tabHeaderClassName}`}>{renderTab()}</div>
+      <div
+        className={`tabs bg-base-100 border-b-2  w-full ${tabHeaderClassName}`}
+      >
+        {renderTab()}
+      </div>
       <div className={`w-full h-full p-4 rounded ${tabContentClassName}`}>
         {renderActiveTabContent()}
       </div>

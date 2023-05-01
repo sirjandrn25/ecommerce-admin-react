@@ -36,7 +36,7 @@ const InputField = ({
   placeholder = "",
 
   error = false,
-  errorMessage = "",
+
   inputClassName = "",
   isRequired = false,
   disabled = false,
@@ -108,9 +108,7 @@ const InputField = ({
         />
       )}
 
-      {error && errorMessage && (
-        <div className="pl-1 mt-1 text-xs text-error">{errorMessage}</div>
-      )}
+      {error && <div className="pl-1 mt-1 text-xs text-error">{error}</div>}
     </div>
   );
 };

@@ -14,12 +14,10 @@ import { Capitalize, EmptyFunction } from "@Utils/common.utils";
 import ModalUtil from "@Utils/modal.utils";
 import { sendRequest } from "@Utils/service.utils";
 import { useState } from "react";
-import { useWizard } from "react-use-wizard";
 import useProduct from "../Hooks/useProduct.hook";
 import useProductVariant from "../Hooks/useProductVariant.hook";
 
 const ProductVariant = () => {
-  const { previousStep, nextStep } = useWizard();
   const { data } = useProductVariant();
 
   const openVariantForm = (index?: number) => {
@@ -35,24 +33,15 @@ const ProductVariant = () => {
   };
 
   return (
-    <ModalContainer
-      title="Product Variant"
-      titleClassName="!bg-base-100 border-b"
-      closeIcon={false}
-    >
-      <ModalBody className="flex flex-col gap-4">
-        <div className="flex items-center justify-end">
-          <Button onClick={() => openVariantForm()} outline size="sm">
-            Add New
-          </Button>
-        </div>
+    <div className="gap-4 p-4 rounded-lg col-flex bg-base-100">
+      <div className="flex items-center justify-end">
+        <Button onClick={() => openVariantForm()} outline size="sm">
+          Add New
+        </Button>
+      </div>
 
-        <VariantItems {...{ data }} />
-      </ModalBody>
-      {/* <ModalFooter className="!bg-base-100 border-t">
-        <WizardFooter {...{ previousStep, nextStep: handleSubmit }} />
-      </ModalFooter> */}
-    </ModalContainer>
+      <VariantItems {...{ data }} />
+    </div>
   );
 };
 
