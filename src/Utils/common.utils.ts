@@ -44,3 +44,20 @@ export const Capitalize = (str: string = "") => {
   const firstElement = str[0];
   return `${firstElement.toUpperCase()}${str.slice(1, str?.length)}`;
 };
+
+export const IsArray = (arr: any) => {
+  return Array.isArray(arr);
+};
+
+export const IsUniqueArray = (array: string[] | number[]) => {
+  const exist_elements: any[] = [];
+  for (let arr of array) {
+    if (!exist_elements.includes(arr)) exist_elements.push(arr);
+  }
+  return exist_elements?.length === array?.length;
+};
+
+export const IsUniqueArrayObject = (array: any[], key: string) => {
+  if (!IsArray(array)) return false;
+  return IsUniqueArray(array.map((element) => element[key]));
+};
