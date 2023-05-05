@@ -16,6 +16,8 @@ import { sendRequest } from "@Utils/service.utils";
 import { useState } from "react";
 import useProduct from "../Hooks/useProduct.hook";
 import useProductVariant from "../Hooks/useProductVariant.hook";
+import useProductOption from "../Hooks/userProductOptions.hook";
+import ProductOption from "./productOption.component";
 
 const ProductVariant = () => {
   const { data } = useProductVariant();
@@ -31,10 +33,24 @@ const ProductVariant = () => {
       },
     });
   };
+  const openProductOptionForm = () => {
+    ModalUtil.open({
+      component: ProductOption,
+      modalSize: "lg",
+      props: {
+        callback: (data: any) => {
+          ModalUtil.close();
+        },
+      },
+    });
+  };
 
   return (
     <div className="gap-4 p-4 rounded-lg col-flex bg-base-100">
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end gap-4">
+        <Button onClick={() => openProductOptionForm()} outline size="sm">
+          Add Option
+        </Button>
         <Button onClick={() => openVariantForm()} outline size="sm">
           Add New
         </Button>
@@ -62,8 +78,8 @@ const VariantItems = ({ data = [], onRemove, onEdit }: any) => {
 
 const VariantForm = ({ item, callback = EmptyFunction }: any) => {
   const [variantForm, setVariantForm] = useState<any>({});
+  const { data: options } = useProductOption();
   const { formData: product } = useProduct();
-  const { options = [] } = product || {};
 
   const [currencies] = useCurrency();
   const optionValue = (option: any) => {
@@ -110,7 +126,7 @@ const VariantForm = ({ item, callback = EmptyFunction }: any) => {
     return newData;
   };
   const handleSave = async (next = EmptyFunction) => {
-    const { success, response } = await sendRequest({
+    const { success } = await sendRequest({
       end_point: "/product-variants",
       method: "post",
       classParams: {

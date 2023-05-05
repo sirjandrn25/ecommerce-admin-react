@@ -27,6 +27,10 @@
 	}
 }
 
+.table-link{
+	@apply text-info hover:underline cursor-pointer;
+}
+
 .col-flex{
 	@apply flex flex-col;
 }

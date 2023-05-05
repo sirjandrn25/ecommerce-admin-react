@@ -2,7 +2,10 @@ import GenericListing, {
   GenericListingInterface,
 } from "@Composites/GenericListing/genericListing";
 import { PRODUCT_API_ROUTE } from "@Constants/apiRoute.constant";
-import { PRODUCT_CREATE_ROUTE } from "@Constants/route.constant";
+import {
+  PRODUCT_CREATE_ROUTE,
+  PRODUCT_EDIT_ROUTE,
+} from "@Constants/route.constant";
 import useNavigation from "@Hooks/useNavigation.hook";
 
 const ProductListModule = () => {
@@ -28,6 +31,20 @@ const ProductListModule = () => {
         {
           name: "name",
           key: "title",
+          renderValue: (item) => {
+            return (
+              <div
+                onClick={() => {
+                  navigation({
+                    pathname: `${PRODUCT_EDIT_ROUTE}/${item.id}`,
+                  });
+                }}
+                className="table-link"
+              >
+                {item?.title}
+              </div>
+            );
+          },
         },
         {
           name: "status",

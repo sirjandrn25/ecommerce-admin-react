@@ -1,9 +1,8 @@
 import Icon from "@Components/Icon/icon.component";
 import { PlusIcon } from "@Constants/imageMapping.constants";
-import { KeyboardEventHandler, useState } from "react";
+import { useState } from "react";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
-import CreatableSelect from "react-select/creatable";
 import { useUpdateEffect } from "react-use";
 import { EmptyFunction, GetObjectFromArray } from "../../Utils/common.utils";
 export type SelectOptionType = {
@@ -30,16 +29,8 @@ export interface SelectBoxType {
   isSearchable?: boolean;
   addNew?: () => void;
   placeholder?: string;
+  value?: string;
 }
-
-const components = {
-  DropdownIndicator: null,
-};
-
-const createOption = (label: string) => ({
-  label,
-  value: label,
-});
 
 const SelectBox = ({
   label,
@@ -52,33 +43,24 @@ const SelectBox = ({
   isRequired = false,
   defaultTheme = {},
   className = "",
-  isCreatable,
+
   async,
   loadOptions,
   isSearchable,
   addNew,
   onBlur = EmptyFunction,
   placeholder = "",
+  value,
 }: SelectBoxType) => {
-  const [value, setValue] = useState<any>(defaultInputValue);
-  const [inputValue, setInputValue] = useState<any>("");
+  const [inputValue, setInputValue] = useState<any>(defaultInputValue);
 
   useUpdateEffect(() => {
-    if (!isCreatable) return;
-    onChange(value);
+    setInputValue(value);
   }, [value]);
 
-  const handleKeyDown: KeyboardEventHandler = (event) => {
-    if (!inputValue) return;
-    switch (event.key) {
-      case "Enter":
-      case "Tab":
-        setValue((prev: any) => [...prev, createOption(inputValue)]);
-
-        setInputValue("");
-        event.preventDefault();
-    }
-  };
+  useUpdateEffect(() => {
+    setInputValue(value);
+  }, [value]);
 
   return (
     <div className={`flex flex-col select-box gap-1 text-sm ${className}`}>
@@ -89,12 +71,9 @@ const SelectBox = ({
       <RenderSelectBox
         {...{
           inputValue,
-          setValue,
           setInputValue,
-          handleKeyDown,
           value,
           onBlur,
-          isCreatable,
           options,
           onChange,
           defaultInputValue,
@@ -203,24 +182,6 @@ const RenderSelectBox = ({
       </div>
     );
   }
-  if (isCreatable) {
-    return (
-      <CreatableSelect
-        components={components}
-        inputValue={inputValue}
-        isClearable
-        isMulti
-        menuIsOpen={false}
-        onChange={(newValue) => setValue(newValue)}
-        onInputChange={(newValue) => setInputValue(newValue)}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        value={value}
-        onBlur={() => onBlur(value)}
-        styles={customStyles}
-      />
-    );
-  }
 
   return (
     <Select
@@ -231,8 +192,6 @@ const RenderSelectBox = ({
       placeholder={placeholder}
       {...rest}
       isSearchable={isSearchable}
-
-      // value={GetLabel()}
     />
   );
 };

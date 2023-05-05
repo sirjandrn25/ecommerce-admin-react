@@ -1,26 +1,23 @@
 import Button from "@Components/Button/button.component";
+import Icon from "@Components/Icon/icon.component";
+import CreatableInputField from "@Components/Input/creatableInputField.component";
 import InputField from "@Components/Input/inputField.component";
 import ModalContainer, {
   ModalBody,
   ModalFooter,
 } from "@Components/Modal/modalContainer.component";
-import SelectBox from "@Components/SelectBox/selecBox.component";
+import { DeleteIcon } from "@Constants/imageMapping.constants";
 import { EmptyFunction, getUuid4 } from "@Utils/common.utils";
+import { sendRequest } from "@Utils/service.utils";
 import { useMemo } from "react";
 import { useList } from "react-use";
-import { useWizard } from "react-use-wizard";
 import useProduct from "../Hooks/useProduct.hook";
-import WizardFooter from "./wizardFooter.component";
-import { DeleteIcon } from "@Constants/imageMapping.constants";
-import Icon from "@Components/Icon/icon.component";
-import { sendRequest } from "@Utils/service.utils";
 
-const ProductOption = () => {
-  const { formData, handleFormData } = useProduct();
-  const { previousStep, nextStep } = useWizard();
+const ProductOption = ({ callback = EmptyFunction }: any) => {
+  const { formData: product } = useProduct();
 
   const [list, { push, updateAt, removeAt }] = useList<any>(
-    formData?.values || [
+    product?.values || [
       {
         title: undefined,
         slug: getUuid4(),
@@ -40,7 +37,7 @@ const ProductOption = () => {
         name: value?.value,
       }));
 
-      newData.product_id = formData?.id;
+      newData.product_id = product?.id;
       return newData;
     });
   };
@@ -63,14 +60,14 @@ const ProductOption = () => {
 
     Promise.all(promises)
       .then((result) => {
-        handleFormData("options", result);
-        nextStep();
         next();
+        callback();
       })
       .catch((error) => {
         next();
+        callback();
+        callback();
       });
-    next();
   };
 
   return (
@@ -107,8 +104,10 @@ const ProductOption = () => {
           })}
         </div>
       </ModalBody>
-      <ModalFooter className="!bg-base-100 border-t">
-        <WizardFooter {...{ previousStep, nextStep: handleSubmit }} />
+      <ModalFooter>
+        <Button progress onClick={handleSubmit}>
+          Save{" "}
+        </Button>
       </ModalFooter>
     </ModalContainer>
   );
@@ -124,13 +123,13 @@ const OptionForm = ({
       <InputField
         value={item?.title}
         label="Title"
-        className="flex-1"
+        className="min-w-[200px]"
         placeholder="Colors"
         onChange={(value: string) => {
           onChange("title", value);
         }}
       />
-      <SelectBox
+      <CreatableInputField
         defaultInputValue={item?.values || []}
         label="Values"
         className="flex-1"
@@ -147,7 +146,7 @@ const OptionForm = ({
         outline
         color="error"
       >
-        <Icon source={DeleteIcon} size={20} iconColor="text-error" />
+        <Icon source={DeleteIcon} size={20} />
       </Button>
     </div>
   );

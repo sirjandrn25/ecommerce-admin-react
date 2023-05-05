@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Debounce } from "../../Utils/common.utils";
+import { useUpdateEffect } from "react-use";
 
 export type InputBaseType = {
   label?: string;
-  // size?: 'xs' | 'sm' | 'md' | 'lg'
+  size?: "xs" | "sm" | "md" | "lg";
   value?: any;
   onChange?: (value: any) => void;
   error?: boolean;
@@ -19,6 +20,7 @@ export type InputBaseType = {
   autoFocus?: boolean;
   onDebounceChange?: (value: any) => void;
   className?: string;
+  defaultValue?: string;
 };
 export type InputFieldType = InputBaseType & {
   type?: "text" | "number" | "email" | "textarea" | "password" | "file";
@@ -30,6 +32,7 @@ const InputField = ({
   onChange,
   label = "",
   value = "",
+  defaultValue = "",
 
   type = "text",
   icon = "",
@@ -48,7 +51,11 @@ const InputField = ({
   // size='sm',
   ...rest
 }: InputFieldType) => {
-  const [inputValue, setInputValue] = useState<any>(value || "");
+  const [inputValue, setInputValue] = useState<any>(defaultValue || "");
+
+  useUpdateEffect(() => {
+    setInputValue(value);
+  }, [value]);
 
   const handleChange = (e: any) => {
     const input_val: any = e.target.value;
@@ -158,7 +165,6 @@ export const TextareaInput = ({
     <textarea
       value={inputValue}
       placeholder={placeholder}
-      // className={`input px-3     input-bordered focus:border-2   w-full max-w-xs ${inputClassName}`}
       onChange={handleChange}
       onBlur={handleBlur}
       {...rest}

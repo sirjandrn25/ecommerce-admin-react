@@ -60,7 +60,7 @@ const useProduct = () => {
       },
     });
     if (success) {
-      Toast.success({ message: "Successfully created product" });
+      Toast.success({ message: "Successfully saved " });
       if (!id) {
         navigation({
           pathname: `${PRODUCT_EDIT_ROUTE}/${response?.id}`,
@@ -77,7 +77,7 @@ const useProduct = () => {
   );
 
   const fetchProductDetail = async () => {
-    if (!id) return;
+    if (!id || formData?.id) return;
     const { success, response } = await sendRequest({
       end_point: `products/${+id}`,
     });

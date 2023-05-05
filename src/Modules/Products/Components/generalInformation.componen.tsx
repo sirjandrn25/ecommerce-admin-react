@@ -16,7 +16,6 @@ const GeneralInformation = forwardRef((props, ref) => {
     },
     [onSubmit]
   );
-  console.log(formData?.title);
 
   return (
     <div className="w-full gap-4 row-flex">

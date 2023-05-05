@@ -39,7 +39,6 @@ const ProductModule = () => {
             progress
             onClick={(next) => {
               const current = generalRef?.current || {};
-              console.log({ current });
               current?.onSubmit(next);
             }}
             size="sm"
