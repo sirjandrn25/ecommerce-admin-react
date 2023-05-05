@@ -1,66 +1,11 @@
 import InputField from "@Components/Input/inputField.component";
 import AsyncSelectBox from "@Components/SelectBox/asyncSelectBox.component";
 import SelectBox from "@Components/SelectBox/selecBox.component";
-import useForm from "@Composites/FormBuilder/Hooks/useForm.hook";
-import { EmptyFunction } from "@Utils/common.utils";
-import { sendRequest } from "@Utils/service.utils";
-import Toast from "@Utils/toast.utils";
-import { forwardRef, useImperativeHandle, useRef } from "react";
+import { forwardRef, useImperativeHandle } from "react";
+import useProduct from "../Hooks/useProduct.hook";
 
 const GeneralInformation = forwardRef((props, ref) => {
-  const sanitizeData = (data: any) => {
-    const newData = { ...data };
-    newData.tags = data?.tags?.map((tag: any) => tag?.value);
-    return newData;
-  };
-
-  const handleSubmit = async (values: any, next = EmptyFunction) => {
-    const { success, response } = await sendRequest({
-      end_point: "products",
-      method: "post",
-      classParams: {
-        ...sanitizeData(values),
-      },
-    });
-    if (success) {
-      Toast.success({ message: "Successfully created product" });
-    }
-    next();
-  };
-
-  const formSchema = [
-    {
-      name: "title",
-      placeholder: "Enter title",
-      label: "Title",
-      isRequired: true,
-    },
-    {
-      name: "subtitle",
-      placeholder: "Enter subtitle",
-      label: "Sub title",
-      isRequired: true,
-    },
-    {
-      name: "category_id",
-      placeholder: "Enter categories",
-      label: "Categories",
-      type: "async_select",
-      end_point: "/categories",
-      isRequired: true,
-    },
-    {
-      name: "description",
-      placeholder: "Enter description",
-      label: "Description",
-      isRequired: true,
-    },
-  ];
-
-  const { formData, handleFormData, onSubmit, error } = useForm(
-    formSchema,
-    handleSubmit
-  );
+  const { handleFormData, onSubmit, formData, error } = useProduct();
 
   useImperativeHandle(
     ref,
@@ -71,7 +16,8 @@ const GeneralInformation = forwardRef((props, ref) => {
     },
     [onSubmit]
   );
-  console.log({ error });
+  console.log(formData?.title);
+
   return (
     <div className="w-full gap-4 row-flex">
       <WrapperBox title="Basic Information">

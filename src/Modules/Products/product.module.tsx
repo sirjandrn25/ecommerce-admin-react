@@ -4,10 +4,10 @@ import GeneralInformation from "./Components/generalInformation.componen";
 import ProductVariant from "./Components/productVariant.component";
 import { useRef } from "react";
 import Button from "@Components/Button/button.component";
-import { current } from "@reduxjs/toolkit";
 
 const ProductModule = () => {
   const generalRef = useRef<any>(null);
+
   const tab_props: TabInterface = {
     tabs: [
       {
@@ -28,6 +28,7 @@ const ProductModule = () => {
     ],
     tabContentClassName: "!p-0",
     tabHeaderClassName: "px-4",
+    isNavigation: false,
   };
   return (
     <Container>

@@ -1,54 +1,97 @@
+import useForm from "@Composites/FormBuilder/Hooks/useForm.hook";
+import { PRODUCT_EDIT_ROUTE } from "@Constants/route.constant";
+import useNavigation from "@Hooks/useNavigation.hook";
 import { EmptyFunction } from "@Utils/common.utils";
 import { sendRequest } from "@Utils/service.utils";
-import { useDispatch, useSelector } from "react-redux";
-import { handleChangeData } from "src/Store/Slicers/Product/product.slicer";
-import { RootState } from "src/Store/store";
+import Toast from "@Utils/toast.utils";
+import { useEffectOnce } from "react-use";
 
 const useProduct = () => {
-  const dispatch = useDispatch();
-  const formData = useSelector((state: RootState) => state?.product?.formData);
+  const { query, navigation } = useNavigation();
+  const { id } = query || {};
 
-  const handleFormData = (key: string, value: any) => {
-    const newData = { [key]: value };
+  useEffectOnce(() => {
+    fetchProductDetail();
+  });
+  const formSchema = [
+    {
+      name: "title",
+      placeholder: "Enter title",
+      label: "Title",
+      isRequired: true,
+    },
+    {
+      name: "subtitle",
+      placeholder: "Enter subtitle",
+      label: "Sub title",
+      isRequired: true,
+    },
+    {
+      name: "category_id",
+      placeholder: "Enter categories",
+      label: "Categories",
+      type: "async_select",
+      end_point: "/categories",
+      isRequired: true,
+    },
+    {
+      name: "description",
+      placeholder: "Enter description",
+      label: "Description",
+      isRequired: true,
+    },
+  ];
 
-    dispatch(handleChangeData(newData));
-  };
-
-  const sanitizeData = () => {
-    const newData = { ...formData };
-    let variants = [];
-    for (let variant of newData?.variants) {
-      const values = [];
-      for (const [key, value] of Object.entries(variant?.option_values))
-        values.push(value);
-      variants.push({
-        ...variant,
-        option_values: values,
-      });
+  const sanitizeData = (data: any) => {
+    const newData = { ...data };
+    if (!id) {
+      delete newData["id"];
     }
-    newData.variants = variants;
+    newData.tags = data?.tags?.map((tag: any) => tag?.value);
     return newData;
   };
 
-  const handleSubmit = async (next: any = EmptyFunction) => {
+  const handleSubmit = async (values: any, next = EmptyFunction) => {
     const { success, response } = await sendRequest({
-      end_point: "/products",
-      method: "post",
+      end_point: id ? `products/${+id}` : "products",
+      method: id ? "put" : "post",
       classParams: {
-        ...sanitizeData(),
+        ...sanitizeData(values),
       },
     });
-
+    if (success) {
+      Toast.success({ message: "Successfully created product" });
+      if (!id) {
+        navigation({
+          pathname: `${PRODUCT_EDIT_ROUTE}/${response?.id}`,
+        });
+      }
+    }
     next();
   };
-  const setFormData = (data: any) => {
-    dispatch(handleChangeData(data));
+
+  const { formData, handleFormData, onSubmit, error, setFormData } = useForm(
+    formSchema,
+    {},
+    handleSubmit
+  );
+
+  const fetchProductDetail = async () => {
+    if (!id) return;
+    const { success, response } = await sendRequest({
+      end_point: `products/${+id}`,
+    });
+
+    if (success) {
+      setFormData(response);
+    }
   };
+
   return {
-    handleFormData,
     formData,
-    handleSubmit,
-    setFormData,
+    handleFormData,
+    onSubmit,
+    error,
   };
 };
 

@@ -25,6 +25,14 @@ const getJoiValidation = (
         Joi.array()
       );
       break;
+    case "async_select":
+      joiValidation = Joi.alternatives().try(
+        Joi.number(),
+        Joi.string(),
+        Joi.object(),
+        Joi.array()
+      );
+      break;
     default:
       joiValidation = Joi.string();
   }
@@ -93,21 +101,31 @@ const useForm = (
   const validationSchema = useMemo(() => {
     return getJoiSchema(schema);
   }, [schema]);
-  const verify = (key: any = null) => {
-    const { error: err } = validationSchema.validate(
-      key
-        ? { [key]: sanitizeFormData(formData[key]) }
-        : sanitizeFormData(formData),
-      { ...getJoiValidationOptions() }
-    );
-
-    if (err) {
-      setError(JoiErrorMessageToJson(err));
-      return false;
+  const sanitizeFormData = useCallback((data: any) => {
+    let sanitizeData: any = {};
+    for (let [key, value] of Object.entries(data)) {
+      sanitizeData = mappingToJson(sanitizeData, key.split("."), value);
     }
-    setError({});
-    return true;
-  };
+    return sanitizeData;
+  }, []);
+  const verify = useCallback(
+    (key: any = null) => {
+      const { error: err } = validationSchema.validate(
+        key
+          ? { [key]: sanitizeFormData(formData[key]) }
+          : sanitizeFormData(formData),
+        { ...getJoiValidationOptions() }
+      );
+
+      if (err) {
+        setError(JoiErrorMessageToJson(err));
+        return false;
+      }
+      setError({});
+      return true;
+    },
+    [formData, sanitizeFormData, validationSchema]
+  );
 
   const handleFormData = (key: string, value: any) => {
     realTimeValidate && verify();
@@ -120,30 +138,24 @@ const useForm = (
     });
   };
 
-  const sanitizeFormData = useCallback((data: any) => {
-    let sanitizeData: any = {};
-    for (let [key, value] of Object.entries(data)) {
-      sanitizeData = mappingToJson(sanitizeData, key.split("."), value);
-    }
-    return sanitizeData;
-  }, []);
-
-  const onSubmit = (next: any = EmptyFunction) => {
-    const isValid = verify();
-
-    if (isValid) {
-      handleSubmit(sanitizeFormData(formData), next);
-      return;
-    }
-    next();
-    // next();
-  };
+  const onSubmit = useCallback(
+    (next: any = EmptyFunction) => {
+      const isValid = verify();
+      if (isValid) {
+        handleSubmit(sanitizeFormData(formData), next);
+        return;
+      }
+      next();
+    },
+    [formData, handleSubmit, sanitizeFormData, verify]
+  );
 
   return {
     handleFormData,
     error,
     onSubmit,
     formData,
+    setFormData,
   };
 };
 

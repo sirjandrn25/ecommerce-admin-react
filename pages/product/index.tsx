@@ -1,3 +1,3 @@
-import ProductModule from "@Modules/Products/product.module";
+import AddProduct from "@Modules/Products/Components/addProduct.component";
 
-export default ProductModule;
+export default AddProduct;
