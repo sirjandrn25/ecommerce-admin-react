@@ -18,6 +18,7 @@ import useProduct from "../Hooks/useProduct.hook";
 import useProductVariant from "../Hooks/useProductVariant.hook";
 import useProductOption from "../Hooks/userProductOptions.hook";
 import ProductOption from "./productOption.component";
+import error from "next/error";
 
 const ProductVariant = () => {
   const { data } = useProductVariant();
@@ -80,8 +81,6 @@ const VariantForm = ({ item, callback = EmptyFunction }: any) => {
   const [variantForm, setVariantForm] = useState<any>({});
   const { data: options } = useProductOption();
   const { formData: product } = useProduct();
-
-  const [currencies] = useCurrency();
   const optionValue = (option: any) => {
     const values = variantForm?.values || {};
     return values[option?.id];
@@ -94,13 +93,6 @@ const VariantForm = ({ item, callback = EmptyFunction }: any) => {
       };
     });
 
-  const handlePrices = (key: number, value: number) => {
-    const prices = variantForm?.prices;
-    handleFormData("prices", {
-      ...prices,
-      [key]: value,
-    });
-  };
   const handleValues = (key: string, value: any) => {
     const values = variantForm?.option_values || {};
     handleFormData("option_values", {
@@ -110,14 +102,7 @@ const VariantForm = ({ item, callback = EmptyFunction }: any) => {
   };
   const sanitizeData = () => {
     const newData = { ...variantForm };
-    const prices = [];
-    for (let [key, value] of Object.entries(newData?.prices)) {
-      prices.push({
-        currency_id: Number(key),
-        price: value,
-      });
-    }
-    newData.prices = prices;
+
     const option_values = [];
     for (let value of Object.values(newData.option_values)) {
       option_values.push({ id: value });
@@ -166,22 +151,30 @@ const VariantForm = ({ item, callback = EmptyFunction }: any) => {
               isRequired
             />
           </div>
-          <ContentItem title="Prices">
-            {currencies?.map((currency: any) => {
-              return (
-                <CurrencyInput
-                  label={Capitalize(currency?.name)}
-                  className="flex-1"
-                  placeholder="Enter price"
-                  onChange={(value: string) => {
-                    handlePrices(currency?.id, +value);
-                  }}
-                  symbol={currency?.symbol}
-                  key={currency?.id}
-                />
-              );
-            })}
-          </ContentItem>
+          <div className="items-center justify-between gap-4 row-flex">
+            <CurrencyInput
+              label="Selling Price "
+              symbol="rupee"
+              value={variantForm?.selling_price}
+              placeholder="Enter selling price"
+              className="flex-1"
+              isRequired
+              onChange={(value) => {
+                handleFormData("selling_price", +value);
+              }}
+            />
+            <CurrencyInput
+              label="Cost Price "
+              symbol="rupee"
+              value={variantForm?.cost_price}
+              placeholder="Enter cost price"
+              className="flex-1"
+              isRequired
+              onChange={(value) => {
+                handleFormData("cost_price", +value);
+              }}
+            />
+          </div>
           <ContentItem title="Options">
             {options?.map((option: any) => {
               return (

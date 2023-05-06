@@ -40,6 +40,24 @@ const useProduct = () => {
       label: "Description",
       isRequired: true,
     },
+    {
+      name: "cost_price",
+      label: "Cost Price",
+      type: "number",
+      isRequired: true,
+    },
+    {
+      name: "selling_price",
+      label: "Selling Price",
+      type: "number",
+      isRequired: true,
+    },
+    {
+      name: "tax_rate",
+      label: "Tax Rate",
+      type: "number",
+      isRequired: true,
+    },
   ];
 
   const sanitizeData = (data: any) => {
