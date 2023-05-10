@@ -5,7 +5,16 @@ import {
   SubMenu,
   useProSidebar,
 } from "react-pro-sidebar";
-import * as IconUtils from "@Constants/imageMapping.constants";
+
+import Icon from "@Components/Icon/icon.component";
+import {
+  DashboardIcon,
+  DollorIcon,
+  PercentageIcon,
+  ProductIcon,
+  SettingIcon,
+  UsersIcon,
+} from "@Constants/imageMapping.constants";
 import useNavigation from "@Hooks/useNavigation.hook";
 import { resolveNavigation } from "@Utils/common.utils";
 
@@ -29,30 +38,35 @@ interface MenuItemIterface extends MenuBaseItemIterface {
 
 const menus: MenuItemIterface[] = [
   {
-    name: "Dashboard",
-    icon: IconUtils.DashboardIcon,
+    name: "Orders",
+    icon: DollorIcon,
 
-    url: "/",
+    url: "orders",
   },
-
-  {
-    name: "Users",
-    icon: IconUtils.UserIcon,
-
-    url: "users",
-  },
-
   {
     name: "Products",
     //   border: false,
-    icon: IconUtils.ProductIcon,
+    icon: ProductIcon,
 
     url: "products",
   },
 
   {
+    name: "Customers",
+    icon: UsersIcon,
+
+    url: "customers",
+  },
+  {
+    name: "Discount",
+    icon: PercentageIcon,
+
+    url: "discounts",
+  },
+
+  {
     name: "Settings",
-    icon: IconUtils.SearchIcon,
+    icon: SettingIcon,
   },
 ];
 
@@ -100,7 +114,7 @@ const CustomSidebar = () => {
       <Menu>
         <MenuItem
           className="border-b border-base-200 py-[7px] "
-          icon={<IconUtils.DashboardIcon size={25} />}
+          icon={<Icon source={DashboardIcon} size={25} />}
         >
           {!collapsed && <div className="text-xl">Fashion Shop</div>}
         </MenuItem>

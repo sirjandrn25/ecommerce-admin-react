@@ -61,3 +61,11 @@ export const IsUniqueArrayObject = (array: any[], key: string) => {
   if (!IsArray(array)) return false;
   return IsUniqueArray(array.map((element) => element[key]));
 };
+
+export const IsFunction = (value: any) => {
+  if (!value) return false;
+  return typeof value === "function";
+};
+export const IsUndefined = (value: any) => {
+  return typeof value === "undefined";
+};

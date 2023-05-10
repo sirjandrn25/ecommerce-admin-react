@@ -13,7 +13,7 @@ const ProductListModule = () => {
 
   const listing_props: GenericListingInterface = {
     name: "Product Lists",
-    end_point: PRODUCT_API_ROUTE,
+    type: "products",
     actions: [
       {
         name: "Add New",
@@ -62,6 +62,10 @@ const ProductListModule = () => {
             );
             return <div>{quantiy}</div>;
           },
+        },
+        {
+          name: "Status",
+          key: "status",
         },
         {
           name: "Date",

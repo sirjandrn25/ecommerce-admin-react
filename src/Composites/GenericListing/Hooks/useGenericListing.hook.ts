@@ -1,20 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import { asyncService } from "@Utils/service.utils";
 import { useState } from "react";
+import routers from "src/Controllers/route.controller";
 
-const useGenericListing = ({ end_point }: any) => {
+const useGenericListing = ({ type }: any) => {
+  const controller = routers[type];
+
   const [pagination, setPagination] = useState<any>({
     limit: 20,
     page: 1,
   });
+
   const [filters, setFilters] = useState<any>({});
   const fetchList = () =>
     asyncService({
-      end_point,
+      end_point: controller.list(),
     });
   const { data, isLoading } = useQuery({
     queryFn: fetchList,
-    queryKey: ["generic_listing", end_point, pagination, filters],
+    queryKey: ["generic_listing", controller.list(), pagination, filters],
   });
 
   return {

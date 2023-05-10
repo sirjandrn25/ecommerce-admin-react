@@ -58,7 +58,7 @@ const GeneralInformation = forwardRef((props, ref) => {
           <div className="grid grid-cols-2 gap-4">
             <CurrencyInput
               label="Selling Price "
-              symbol="rupee"
+              symbol="dollor"
               value={formData?.selling_price}
               placeholder="Enter selling price"
               error={error?.selling_price}
@@ -69,7 +69,7 @@ const GeneralInformation = forwardRef((props, ref) => {
             />
             <CurrencyInput
               label="Cost Price "
-              symbol="rupee"
+              symbol="dollor"
               value={formData?.cost_price}
               error={error?.cost_price}
               placeholder="Enter cost price"

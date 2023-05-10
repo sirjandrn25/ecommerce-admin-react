@@ -17,7 +17,8 @@ interface ActionInterface {
 
 export interface GenericListingInterface {
   filter?: any;
-  end_point: string;
+
+  type?: string;
   name: string;
   table: GenericTableProps;
   actions?: ActionInterface[];
@@ -25,13 +26,14 @@ export interface GenericListingInterface {
 
 const GenericListing = ({
   table,
-  end_point,
+
+  type,
   name,
   filter,
   actions = [],
 }: GenericListingInterface) => {
   const { isLoading, filters, setFilters, pagination, setPagination, data } =
-    useGenericListing({ end_point });
+    useGenericListing({ type });
   return (
     <Container>
       <div className="flex flex-col w-full h-full gap-4 ">

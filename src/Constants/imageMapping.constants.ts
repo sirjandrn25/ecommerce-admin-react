@@ -20,6 +20,7 @@ export { BiTrash as DeleteIcon } from "react-icons/bi";
 export { FaPlus as PlusIcon } from "react-icons/fa";
 export { BsCurrencyEuro as EuroIcon } from "react-icons/bs";
 export { BsCurrencyDollar as DollorIcon } from "react-icons/bs";
+export { AiOutlinePercentage as PercentageIcon } from "react-icons/ai";
 
 export { BsCurrencyPound as PoundIcon } from "react-icons/bs";
 export { BiRupee as RupeeIcon } from "react-icons/bi";

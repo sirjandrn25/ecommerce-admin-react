@@ -8,6 +8,9 @@ import {
   ArrowChevronRight,
   ArrowChevronLeft,
 } from "@Constants/imageMapping.constants";
+import { IsFunction } from "@Utils/common.utils";
+import { FormatCurrency } from "@Utils/currency.utils";
+import Link from "next/link";
 import { useState } from "react";
 
 export interface ColumnInterface {
@@ -18,6 +21,7 @@ export interface ColumnInterface {
   className?: string;
   renderValue?: (data: any) => any;
   isVisible?: boolean;
+  url?: string | ((item: any) => string);
 }
 
 export interface RowActionInterface {
@@ -135,7 +139,7 @@ const GenericTable = ({
           return (
             <th
               scope="col"
-              className={`text-xs ${column.cla} ${
+              className={`text-xs ${column.className} ${
                 column.sort ? "hover:cursor-pointer" : ""
               } `}
               onClick={() =>
@@ -178,6 +182,34 @@ const GenericTable = ({
     });
   };
 
+  const parseToUrl = (item: any, column: any) => {
+    if (IsFunction(column.url)) return column.url(item);
+    return column?.url;
+  };
+
+  const parseColumnItem = (item: any, column: any) => {
+    const value = item[column?.key];
+    if (IsFunction(column?.renderValue)) column?.renderValue(item);
+    //parse url value
+    let columnValue: any;
+    if (!value) return "-";
+    switch (column.type) {
+      case "currency":
+        columnValue = FormatCurrency(value);
+        break;
+      default:
+        columnValue = value;
+    }
+    if (column?.url) {
+      return (
+        <div className="text-info hover:underline">
+          <Link href={parseToUrl(item, column)}>{columnValue}</Link>
+        </div>
+      );
+    }
+    return columnValue;
+  };
+
   const TableRow = ({ row, idx }: any) => {
     return (
       <tr className={`${isZebraTable && "even:bg-base-200 odd:bg-base-100"}`}>
@@ -186,7 +218,7 @@ const GenericTable = ({
           if (column.isVisible === false) return;
           return (
             <td className={`${column.className}`} key={index}>
-              {!column.renderValue ? row[column.key] : column.renderValue(row)}
+              {parseColumnItem(row, column)}
             </td>
           );
         })}

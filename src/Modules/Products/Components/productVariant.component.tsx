@@ -154,7 +154,7 @@ const VariantForm = ({ item, callback = EmptyFunction }: any) => {
           <div className="items-center justify-between gap-4 row-flex">
             <CurrencyInput
               label="Selling Price "
-              symbol="rupee"
+              symbol="dollor"
               value={variantForm?.selling_price}
               placeholder="Enter selling price"
               className="flex-1"
@@ -165,7 +165,7 @@ const VariantForm = ({ item, callback = EmptyFunction }: any) => {
             />
             <CurrencyInput
               label="Cost Price "
-              symbol="rupee"
+              symbol="dollor"
               value={variantForm?.cost_price}
               placeholder="Enter cost price"
               className="flex-1"
