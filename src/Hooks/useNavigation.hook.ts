@@ -28,6 +28,9 @@ const useNavigation = () => {
     });
   };
   const pressBack = () => router.back();
+  const params: any = {
+    ...query,
+  };
   return {
     navigation,
     pathname,
@@ -36,6 +39,7 @@ const useNavigation = () => {
     basePath,
     isReady,
     pressBack,
+    ...params,
   };
 };
 

@@ -13,3 +13,14 @@ export { BsFillGridFill as DashboardIcon } from "react-icons/bs";
 export { BsColumns as ProductIcon } from "react-icons/bs";
 export { BsPeople as UsersIcon } from "react-icons/bs";
 export { AiOutlineClose as CloseIcon } from "react-icons/ai";
+export { BiChevronRight as ArrowChevronRight } from "react-icons/bi";
+export { BiChevronLeft as ArrowChevronLeft } from "react-icons/bi";
+export { BiDownload as DownLineIcon } from "react-icons/bi";
+export { BiTrash as DeleteIcon } from "react-icons/bi";
+export { FaPlus as PlusIcon } from "react-icons/fa";
+export { BsCurrencyEuro as EuroIcon } from "react-icons/bs";
+export { BsCurrencyDollar as DollorIcon } from "react-icons/bs";
+export { AiOutlinePercentage as PercentageIcon } from "react-icons/ai";
+
+export { BsCurrencyPound as PoundIcon } from "react-icons/bs";
+export { BiRupee as RupeeIcon } from "react-icons/bi";

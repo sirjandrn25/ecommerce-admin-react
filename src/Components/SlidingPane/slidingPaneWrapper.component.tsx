@@ -2,100 +2,103 @@ import React, { Component, useImperativeHandle, useState } from "react";
 import SlidingPane from "./slidingPane.component";
 
 interface SlidingPaneWrapperInterface {
-	component: (props: any) => React.ReactElement;
-	headingTitle?: string;
-	headingSubTitle?: string;
-	props?: any;
-	size?: number;
-	openFrom?: "right" | "left" | "bottom";
+  component: (props: any) => React.ReactElement;
+  headingTitle?: string;
+  headingSubTitle?: string;
+  props?: any;
+  size?: number;
+  openFrom?: "right" | "left" | "bottom";
 }
 
 // eslint-disable-next-line react/display-name
 const SlidingPaneWrapper = React.forwardRef((props, ref) => {
-	const [modals, setModals] = useState<any>([]);
+  const [modals, setModals] = useState<any>([]);
 
-	const close = (close_index: number = modals.length - 1) => {
-		setTimeout(() => {
-			const modal_list = [...modals];
-			modal_list.splice(close_index, 1);
-			setModals(modal_list);
-		}, 400);
-		const currentModal = modals[close_index];
-		currentModal.isVisible = false;
-		setModals((prev: any) => {
-			return (prev || []).map((modal: any, index: number) =>
-				close_index === index ? currentModal : modal
-			);
-		});
-	};
-	const closeAll = () => {
-		setModals((prev: any) => {
-			return (prev || []).map((modal: any) => (modal.isVisible = false));
-		});
-		setTimeout(() => {
-			setModals([]);
-		}, 300);
-	};
-	const updateProps = (update_props: any) => {
-		setModals((prev: any) => {
-			const update_index = (prev || []).length - 1;
-			return (prev || []).map((modal: any, index: number) => {
-				if (index === update_index) {
-					return {
-						...modal,
-						...update_props,
-					};
-				}
-				return modal;
-			});
-		});
-	};
+  const close = (close_index: number = modals.length - 1) => {
+    setTimeout(() => {
+      const modal_list = [...modals];
+      modal_list.splice(close_index, 1);
+      setModals(modal_list);
+    }, 400);
+    const currentModal = modals[close_index];
+    if (currentModal?.isVisible) {
+      currentModal.isVisible = false;
+    }
 
-	const open = ({
-		component,
-		props = {},
-		...rest
-	}: SlidingPaneWrapperInterface) => {
-		const sheet = {
-			props,
-			component,
-			isVisible: true,
-			...rest,
-		};
+    setModals((prev: any) => {
+      return (prev || []).map((modal: any, index: number) =>
+        close_index === index ? currentModal : modal
+      );
+    });
+  };
+  const closeAll = () => {
+    setModals((prev: any) => {
+      return (prev || []).map((modal: any) => (modal.isVisible = false));
+    });
+    setTimeout(() => {
+      setModals([]);
+    }, 300);
+  };
+  const updateProps = (update_props: any) => {
+    setModals((prev: any) => {
+      const update_index = (prev || []).length - 1;
+      return (prev || []).map((modal: any, index: number) => {
+        if (index === update_index) {
+          return {
+            ...modal,
+            ...update_props,
+          };
+        }
+        return modal;
+      });
+    });
+  };
 
-		setModals((prev: any = []) => {
-			return [...prev, sheet];
-		});
-	};
-	useImperativeHandle(
-		ref,
-		() => {
-			return {
-				close,
-				open,
-				closeAll,
-				updateProps,
-			};
-		},
-		[]
-	);
+  const open = ({
+    component,
+    props = {},
+    ...rest
+  }: SlidingPaneWrapperInterface) => {
+    const sheet = {
+      props,
+      component,
+      isVisible: true,
+      ...rest,
+    };
 
-	const EmptyComponent = () => {
-		return <></>;
-	};
+    setModals((prev: any = []) => {
+      return [...prev, sheet];
+    });
+  };
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        close,
+        open,
+        closeAll,
+        updateProps,
+      };
+    },
+    []
+  );
 
-	const renderModals = () => {
-		return (modals || []).map((sheet: any, index: number) => {
-			const Component = sheet?.component || EmptyComponent;
-			return (
-				<SlidingPane closeModal={close} {...sheet} key={index}>
-					<Component {...sheet.props} />
-				</SlidingPane>
-			);
-		});
-	};
+  const EmptyComponent = () => {
+    return <></>;
+  };
 
-	return renderModals();
+  const renderModals = () => {
+    return (modals || []).map((sheet: any, index: number) => {
+      const Component = sheet?.component || EmptyComponent;
+      return (
+        <SlidingPane closeModal={close} {...sheet} key={index}>
+          <Component {...sheet.props} />
+        </SlidingPane>
+      );
+    });
+  };
+
+  return renderModals();
 });
 
 export default SlidingPaneWrapper;

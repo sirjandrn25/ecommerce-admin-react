@@ -26,6 +26,29 @@
 		}
 	}
 }
+
+.table-link{
+	@apply text-info hover:underline cursor-pointer;
+}
+
+.col-flex{
+	@apply flex flex-col;
+}
+.row-flex{
+	@apply flex flex-row;
+}
+
+.generic_table_wrapper {
+	@apply inline-block min-w-full shadow bg-base-100 rounded-lg overflow-hidden;
+	table {
+		thead tr th {
+			@apply px-5 py-3 border border-t-0 last:border-r-0 first:border-l-0  text-left text-xs font-semibold  uppercase tracking-wider;
+		}
+		tbody tr td {
+			@apply px-5 py-2 border  first:border-l-0 last:border-r-0  text-sm;
+		}
+	}
+}
 .slide-pane__overlay {
 	z-index: 10000;
 	.slide-pane {

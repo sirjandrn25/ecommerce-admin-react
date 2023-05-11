@@ -1,6 +1,6 @@
+import { EmptyFunction } from "@Utils/common.utils";
 import Joi from "joi";
-import { useMemo, useState } from "react";
-import { EmptyFunction } from "../../../Utils/common.utils";
+import { useState, useMemo, useCallback } from "react";
 import { JoiErrorMessageToJson } from "../Utils/joiValidation.utils";
 
 //single validation object get
@@ -18,6 +18,14 @@ const getJoiValidation = (
       joiValidation = Joi.string().email({ tlds: { allow: false } });
       break;
     case "select":
+      joiValidation = Joi.alternatives().try(
+        Joi.number(),
+        Joi.string(),
+        Joi.object(),
+        Joi.array()
+      );
+      break;
+    case "async_select":
       joiValidation = Joi.alternatives().try(
         Joi.number(),
         Joi.string(),
@@ -93,22 +101,35 @@ const useForm = (
   const validationSchema = useMemo(() => {
     return getJoiSchema(schema);
   }, [schema]);
-  const verify = (key: any = null) => {
-    const { error: err } = validationSchema.validate(
-      key ? { [key]: formData[key] } : formData,
-      { ...getJoiValidationOptions() }
-    );
-
-    if (err) {
-      setError(JoiErrorMessageToJson(err));
-      return false;
+  const sanitizeFormData = useCallback((data: any) => {
+    let sanitizeData: any = {};
+    for (let [key, value] of Object.entries(data)) {
+      sanitizeData = mappingToJson(sanitizeData, key.split("."), value);
     }
-    setError({});
-    return true;
-  };
+    return sanitizeData;
+  }, []);
+  const verify = useCallback(
+    (key: any = null) => {
+      const { error: err } = validationSchema.validate(
+        key
+          ? { [key]: sanitizeFormData(formData[key]) }
+          : sanitizeFormData(formData),
+        { ...getJoiValidationOptions() }
+      );
+
+      if (err) {
+        setError(JoiErrorMessageToJson(err));
+        return false;
+      }
+      setError({});
+      return true;
+    },
+    [formData, sanitizeFormData, validationSchema]
+  );
 
   const handleFormData = (key: string, value: any) => {
     realTimeValidate && verify();
+
     setFormData((prev: any) => {
       return {
         ...prev,
@@ -117,19 +138,50 @@ const useForm = (
     });
   };
 
-  const onSubmit = (next: any = EmptyFunction) => {
-    const isValid = verify();
-    if (isValid) {
-      handleSubmit(formData);
-    }
-    next();
-  };
+  const onSubmit = useCallback(
+    (next: any = EmptyFunction) => {
+      const isValid = verify();
+      if (isValid) {
+        handleSubmit(sanitizeFormData(formData), next);
+        return;
+      }
+      next();
+    },
+    [formData, handleSubmit, sanitizeFormData, verify]
+  );
 
   return {
     handleFormData,
     error,
     onSubmit,
     formData,
+    setFormData,
+  };
+};
+
+const parseToJson = (keys: string[], value: any) => {
+  return keys.reverse().reduce((prev, next) => {
+    return { [next]: prev };
+  }, value);
+};
+
+const mappingToJson = (
+  base_value: any,
+  insert_keys: string[],
+  insert_value: any
+) => {
+  for (const [key, value] of Object.entries(base_value)) {
+    if (insert_keys.includes(key)) {
+      insert_keys.shift(); //pop first value
+
+      base_value[key] = mappingToJson(value, [...insert_keys], insert_value);
+
+      return base_value;
+    }
+  }
+  return {
+    ...base_value,
+    ...parseToJson(insert_keys, insert_value),
   };
 };
 

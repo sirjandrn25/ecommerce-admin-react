@@ -1,15 +1,15 @@
+import Button from "@Components/Button/button.component";
+import { EmptyFunction } from "@Utils/common.utils";
 import {
   forwardRef,
-  memo,
-  useCallback,
   useImperativeHandle,
+  useCallback,
   useMemo,
+  memo,
 } from "react";
-import Button from "../../Components/Button/button.component";
-import { EmptyFunction } from "../../Utils/common.utils";
 import getSchemaElement from "./Components/getSchemaElement.component";
 import useForm from "./Hooks/useForm.hook";
-import { FormInterface } from "./Types/form.types";
+import { FormInterface, SchemaType } from "./Types/form.types";
 
 const FormBuilder = forwardRef(
   (
@@ -20,6 +20,7 @@ const FormBuilder = forwardRef(
       className = "",
       handleSubmit = EmptyFunction,
       realTimeValidate = false,
+      submitLabel,
       ...rest
     }: FormInterface,
     ref: any
@@ -32,9 +33,9 @@ const FormBuilder = forwardRef(
     );
     useImperativeHandle(
       ref,
-      () => {
-        onSubmit: onSubmit;
-      },
+      () => ({
+        onSubmit,
+      }),
       [onSubmit]
     );
 
@@ -45,15 +46,34 @@ const FormBuilder = forwardRef(
       [error]
     );
 
-    const renderSchema = useCallback(() => {
-      return fields.map((field, index: number) => {
-        const Element = getSchemaElement(field?.type);
+    const renderSchemaElement = useCallback(
+      (
+        field: SchemaType,
+        index: number | string,
+        formDataKey: string = ""
+      ): any => {
+        if (field?.type === "object" && field?.formSchema) {
+          return renderSchemaElement(
+            field?.formSchema,
+            index + field.name,
+            formDataKey
+              ? `${formDataKey}.${field?.formSchema?.name}`
+              : formDataKey
+          );
+        }
+        const Element = getSchemaElement(field?.type || "text");
         return (
           <div key={field.name || index} className={field.name}>
             <Element
               {...field}
               onChange={(value: any) => {
-                handleFormData(field.name, value);
+                if (
+                  ["select", "async_select"].includes(field?.type as string)
+                ) {
+                  handleFormData(formDataKey, value?.value);
+                } else {
+                  handleFormData(formDataKey, value);
+                }
               }}
               value={formData[field?.name]}
               error={hasError(field.name)}
@@ -61,10 +81,17 @@ const FormBuilder = forwardRef(
             />
           </div>
         );
+      },
+      [error, formData, handleFormData, hasError]
+    );
+
+    const renderSchema = useCallback(() => {
+      return fields.map((field, index: number) => {
+        return renderSchemaElement(field, index, field?.name);
       });
-    }, [fields, formData, hasError, error, handleFormData]);
+    }, [fields, renderSchemaElement]);
     const layoutClass = useMemo(() => {
-      let className = `gap-4 grid`;
+      let className = `gap-4 grid `;
       switch (layout) {
         case "two":
           return `${className} grid-cols-2`;
@@ -93,8 +120,10 @@ const FormBuilder = forwardRef(
           <div className={layoutClass}>{renderSchema()}</div>
           {rest?.children ? (
             children({ onSubmit, error, formData })
-          ) : (
-            <Button onClick={onSubmit}>Save</Button>
+          ) : rest?.hiddenSubmit ? null : (
+            <Button progress onClick={onSubmit}>
+              {submitLabel || "Save"}
+            </Button>
           )}
         </div>
       </form>
