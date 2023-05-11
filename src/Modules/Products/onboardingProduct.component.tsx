@@ -1,6 +1,6 @@
 import React from "react";
 import { Wizard } from "react-use-wizard";
-import GeneralInformation from "./Components/generalInformation.componen";
+import GeneralInformation from "./Components/generalInformation.component";
 import Container from "@Components/Container/container.component";
 import ProductOption from "./Components/productOption.component";
 import ProductVariant from "./Components/productVariant.component";

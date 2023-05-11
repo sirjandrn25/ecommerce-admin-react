@@ -5,6 +5,7 @@ import SelectBox from "@Components/SelectBox/selecBox.component";
 import { openAddCategory } from "@Utils/function.utils";
 import { forwardRef, useImperativeHandle } from "react";
 import useProduct from "../Hooks/useProduct.hook";
+import FileUploader from "@Components/FileUploader/fileuploader.component";
 
 const GeneralInformation = forwardRef((props, ref) => {
   const { handleFormData, onSubmit, formData, error } = useProduct();
@@ -119,6 +120,7 @@ const GeneralInformation = forwardRef((props, ref) => {
         </WrapperBox>
         <WrapperBox title="Files Information">
           <div className="gap-4 col-flex">
+            <FileUploader />
             <InputField type="file" label="Thumbnail" />
             <InputField type="file" label="Images" />
           </div>

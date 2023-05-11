@@ -1,6 +1,6 @@
 import Container from "@Components/Container/container.component";
 import Tabs, { TabInterface } from "@Components/Tabs/tabs.component";
-import GeneralInformation from "./Components/generalInformation.componen";
+import GeneralInformation from "./Components/generalInformation.component";
 import ProductVariant from "./Components/productVariant.component";
 import { useRef } from "react";
 import Button from "@Components/Button/button.component";
