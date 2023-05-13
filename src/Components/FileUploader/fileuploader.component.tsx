@@ -3,25 +3,29 @@ import { FileUploaderIcon } from "@Constants/imageMapping.constants";
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import useFileUploader from "./useFileUploader.hook";
+import { EmptyFunction } from "@Utils/common.utils";
 
-const FileUploader = ({ children }: any) => {
+const FileUploader = ({ children, onChange = EmptyFunction }: any) => {
   const { uploading, fileUploadFunc } = useFileUploader();
   const onDrop = useCallback(
     async (acceptedFiles: any) => {
-      console.log({ acceptedFiles });
       const uploadedFiles = await fileUploadFunc(acceptedFiles);
-      console.log({ uploadedFiles });
+      onChange(uploadedFiles);
+
       // Do something with the files
     },
-    [fileUploadFunc]
+    [fileUploadFunc, onChange]
   );
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    disabled: uploading,
+  });
 
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} />
       {!children ? (
-        <DefaultUploaderUI isDragActive={isDragActive} />
+        <DefaultUploaderUI isDragActive={isDragActive} {...{ uploading }} />
       ) : (
         children({ uploading })
       )}
@@ -29,14 +33,22 @@ const FileUploader = ({ children }: any) => {
   );
 };
 
-const DefaultUploaderUI = ({ isDragActive }: any) => {
+const DefaultUploaderUI = ({ isDragActive, uploading }: any) => {
   return (
-    <div className="items-center justify-center gap-2 p-4 text-sm border border-dashed rounded cursor-pointer bg-base-200/20 row-flex">
+    <div
+      className={`items-center justify-center gap-2 p-4 text-sm border border-dashed rounded ${
+        uploading
+          ? "pointer-event-none bg-base-200"
+          : "cursor-pointer bg-base-200/20"
+      }  row-flex`}
+    >
       <Icon source={FileUploaderIcon} isReactIcon />
       {isDragActive ? (
         <div>Dragging files</div>
       ) : (
-        <div className="text-base-primary">Files Uploads</div>
+        <div className="text-base-primary">
+          Files{uploading ? "Uploading ..." : " Uploads"}
+        </div>
       )}
     </div>
   );

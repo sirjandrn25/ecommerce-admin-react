@@ -8,7 +8,10 @@ const useFileUploader = () => {
   const fileUploadFunc = async (files: any) => {
     setUploading(true);
     const formData = new FormData();
-    formData.append("files", files);
+    for (let file of files) {
+      formData.append("files", file);
+    }
+
     const headers = { "Content-Type": "multipart/form-data" };
 
     const { success, response } = await sendRequest({

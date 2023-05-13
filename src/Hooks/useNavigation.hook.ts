@@ -23,7 +23,7 @@ const useNavigation = () => {
       return;
     }
     router.push({
-      pathname: `/${pathname}`,
+      pathname: `${pathname}`,
       query: queryParams,
     });
   };

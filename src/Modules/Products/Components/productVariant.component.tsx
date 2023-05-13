@@ -9,7 +9,6 @@ import SelectBox, {
   parseSelectBoxValue,
 } from "@Components/SelectBox/selecBox.component";
 import GenericTable from "@Composites/GenericTable/genericTable.component";
-import useCurrency from "@Hooks/useCurrency.hook";
 import { Capitalize, EmptyFunction } from "@Utils/common.utils";
 import ModalUtil from "@Utils/modal.utils";
 import { sendRequest } from "@Utils/service.utils";
@@ -18,7 +17,6 @@ import useProduct from "../Hooks/useProduct.hook";
 import useProductVariant from "../Hooks/useProductVariant.hook";
 import useProductOption from "../Hooks/userProductOptions.hook";
 import ProductOption from "./productOption.component";
-import error from "next/error";
 
 const ProductVariant = () => {
   const { data } = useProductVariant();
