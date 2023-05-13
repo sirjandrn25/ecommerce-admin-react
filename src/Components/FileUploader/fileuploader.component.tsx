@@ -4,21 +4,45 @@ import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import useFileUploader from "./useFileUploader.hook";
 import { EmptyFunction } from "@Utils/common.utils";
+import Toast from "@Utils/toast.utils";
 
-const FileUploader = ({ children, onChange = EmptyFunction }: any) => {
+export interface FileUploaderInterface {
+  children?: any;
+  onChange?: (files: any) => void;
+  maxFiles?: number;
+  isMultiple?: boolean;
+}
+
+const FileUploader = ({
+  children,
+  onChange = EmptyFunction,
+  isMultiple = true,
+  maxFiles = 5,
+}: FileUploaderInterface) => {
   const { uploading, fileUploadFunc } = useFileUploader();
   const onDrop = useCallback(
     async (acceptedFiles: any) => {
-      const uploadedFiles = await fileUploadFunc(acceptedFiles);
-      onChange(uploadedFiles);
+      if (acceptedFiles?.length > 0) {
+        const uploadedFiles = await fileUploadFunc(acceptedFiles);
+        Toast.success({
+          message: "Successfully uploaded files",
+        });
+        onChange(uploadedFiles);
+      } else {
+        Toast.error({
+          message: `Maximum ${maxFiles} files allowed to upload`,
+        });
+      }
 
       // Do something with the files
     },
-    [fileUploadFunc, onChange]
+    [fileUploadFunc, maxFiles, onChange]
   );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     disabled: uploading,
+    multiple: isMultiple,
+    maxFiles,
   });
 
   return (

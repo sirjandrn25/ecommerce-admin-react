@@ -6,6 +6,7 @@ import { openAddCategory } from "@Utils/function.utils";
 import { forwardRef, useImperativeHandle } from "react";
 import useProduct from "../Hooks/useProduct.hook";
 import FileUploader from "@Components/FileUploader/fileuploader.component";
+import FileUploaderInput from "@Components/FileUploader/fileUploaderInput.component";
 
 const GeneralInformation = forwardRef((props, ref) => {
   const { handleFormData, onSubmit, formData, error } = useProduct();
@@ -101,7 +102,7 @@ const GeneralInformation = forwardRef((props, ref) => {
               isRequired
               end_point="categories"
               label="Category"
-              defaultInputValue={formData?.category_id}
+              value={formData?.category_id}
               onChange={(option) => {
                 handleFormData("category_id", option?.value);
               }}
@@ -120,9 +121,26 @@ const GeneralInformation = forwardRef((props, ref) => {
         </WrapperBox>
         <WrapperBox title="Files Information">
           <div className="gap-4 col-flex">
-            <FileUploader />
-            <InputField type="file" label="Thumbnail" />
-            <InputField type="file" label="Images" />
+            <FileUploaderInput
+              label="Thumbnail"
+              {...{
+                isMultiple: false,
+                onChange: (files) => {
+                  handleFormData("thumbnail", files[0]);
+                },
+                files: formData?.thumbnail ? [formData?.thumbnail] : [],
+              }}
+            />
+
+            <FileUploaderInput
+              label="Images"
+              {...{
+                onChange: (files) => {
+                  handleFormData("images", files);
+                },
+              }}
+              files={formData?.images || []}
+            />
           </div>
         </WrapperBox>
       </div>
