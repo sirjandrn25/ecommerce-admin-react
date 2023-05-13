@@ -126,6 +126,7 @@ const RenderSelectBox = ({
       // width: width,
       outline: 0,
     }),
+
     control: (base: any) => ({
       ...base,
       width: "100%",

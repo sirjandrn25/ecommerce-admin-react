@@ -1,3 +1,4 @@
+import FileUploaderInput from "@Components/FileUploader/fileUploaderInput.component";
 import CurrencyInput from "@Components/Input/currencyInput.component";
 import InputField from "@Components/Input/inputField.component";
 import AsyncSelectBox from "@Components/SelectBox/asyncSelectBox.component";
@@ -5,8 +6,7 @@ import SelectBox from "@Components/SelectBox/selecBox.component";
 import { openAddCategory } from "@Utils/function.utils";
 import { forwardRef, useImperativeHandle } from "react";
 import useProduct from "../Hooks/useProduct.hook";
-import FileUploader from "@Components/FileUploader/fileuploader.component";
-import FileUploaderInput from "@Components/FileUploader/fileUploaderInput.component";
+import StockUnitInput from "@Components/Input/stockUnitInput.component";
 
 const GeneralInformation = forwardRef((props, ref) => {
   const { handleFormData, onSubmit, formData, error } = useProduct();
@@ -57,7 +57,7 @@ const GeneralInformation = forwardRef((props, ref) => {
           </div>
         </WrapperBox>
         <WrapperBox>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid h-full grid-cols-2 gap-4">
             <CurrencyInput
               label="Selling Price "
               symbol="dollor"
@@ -78,6 +78,17 @@ const GeneralInformation = forwardRef((props, ref) => {
               isRequired
               onChange={(value) => {
                 handleFormData("cost_price", +value);
+              }}
+            />
+            <StockUnitInput
+              onChange={(value) => {
+                handleFormData("stock_unit_id", value?.stock_unit_id);
+                handleFormData("stock", value?.stock);
+              }}
+              label="Quantity"
+              stockInfo={{
+                stock_unit_id: formData?.stock_unit_id,
+                stock: formData?.stock,
               }}
             />
             <InputField
