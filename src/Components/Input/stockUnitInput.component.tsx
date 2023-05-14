@@ -1,15 +1,11 @@
-import SelectBox, {
-  parseSelectBoxValue,
-} from "@Components/SelectBox/selecBox.component";
+import AsyncSelectBox from "@Components/SelectBox/asyncSelectBox.component";
+import { EmptyFunction } from "@Utils/common.utils";
 import { asyncService } from "@Utils/service.utils";
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import { useState } from "react";
+import { useUpdateEffect } from "react-use";
 import UnitController from "src/Controllers/unit.controller";
 import InputField, { InputFieldType } from "./inputField.component";
-import { useUpdateEffect } from "react-use";
-import { EmptyFunction } from "@Utils/common.utils";
-import AsyncSelect from "react-select/dist/declarations/src/Async";
-import AsyncSelectBox from "@Components/SelectBox/asyncSelectBox.component";
 
 type stockInfoType = {
   stock_unit_id: number;

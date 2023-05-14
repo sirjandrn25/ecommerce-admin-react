@@ -189,7 +189,8 @@ const GenericTable = ({
 
   const parseColumnItem = (item: any, column: any) => {
     const value = item[column?.key];
-    if (IsFunction(column?.renderValue)) column?.renderValue(item);
+
+    if (IsFunction(column?.renderValue)) return column?.renderValue(item);
     //parse url value
     let columnValue: any;
     if (!value) return "-";

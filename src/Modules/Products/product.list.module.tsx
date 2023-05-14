@@ -52,15 +52,13 @@ const ProductListModule = () => {
         },
         {
           name: "Inventory",
-          key: "inventory",
+          key: "stock",
           renderValue: (item: any) => {
-            const quantiy = item?.variants?.reduce(
-              (acc: number, value: any) => {
-                return acc + value?.stock || 0;
-              },
-              0
+            return (
+              <div>
+                {item?.stock} {item?.stock_unit?.name || ""}
+              </div>
             );
-            return <div>{quantiy}</div>;
           },
         },
         {
