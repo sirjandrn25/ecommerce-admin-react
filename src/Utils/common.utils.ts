@@ -1,3 +1,5 @@
+import { DISPLAY_DATE_FORMAT } from "@Constants/date.constant";
+import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
 export const EmptyFunction = () => {
@@ -68,4 +70,13 @@ export const IsFunction = (value: any) => {
 };
 export const IsUndefined = (value: any) => {
   return typeof value === "undefined";
+};
+
+export const GetDateValue = (value: string) => {
+  return new Date(value);
+};
+
+export const FormatDisplayDate = (value: any) => {
+  if (!value) return value;
+  return format(GetDateValue(value), DISPLAY_DATE_FORMAT);
 };

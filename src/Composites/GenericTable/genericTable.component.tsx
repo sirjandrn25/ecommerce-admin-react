@@ -8,7 +8,7 @@ import {
   ArrowChevronRight,
   ArrowChevronLeft,
 } from "@Constants/imageMapping.constants";
-import { IsFunction } from "@Utils/common.utils";
+import { FormatDisplayDate, IsFunction } from "@Utils/common.utils";
 import { FormatCurrency } from "@Utils/currency.utils";
 import Link from "next/link";
 import { useState } from "react";
@@ -16,7 +16,7 @@ import { useState } from "react";
 export interface ColumnInterface {
   name: string;
   key: string;
-  type?: "date" | "date_time" | string;
+  type?: "date" | "date_time" | "currency" | string;
   sort?: boolean;
   className?: string;
   renderValue?: (data: any) => any;
@@ -197,6 +197,9 @@ const GenericTable = ({
     switch (column.type) {
       case "currency":
         columnValue = FormatCurrency(value);
+        break;
+      case "date":
+        columnValue = FormatDisplayDate(value);
         break;
       default:
         columnValue = value;

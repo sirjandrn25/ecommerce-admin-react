@@ -1,7 +1,6 @@
 import GenericListing, {
   GenericListingInterface,
 } from "@Composites/GenericListing/genericListing";
-import { PRODUCT_API_ROUTE } from "@Constants/apiRoute.constant";
 import {
   PRODUCT_CREATE_ROUTE,
   PRODUCT_EDIT_ROUTE,
@@ -68,6 +67,7 @@ const ProductListModule = () => {
         {
           name: "Date",
           key: "created_at",
+          type: "date",
         },
       ],
     },
