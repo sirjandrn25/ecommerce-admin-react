@@ -24,3 +24,4 @@ export { AiOutlinePercentage as PercentageIcon } from "react-icons/ai";
 export { FiUploadCloud as FileUploaderIcon } from "react-icons/fi";
 export { BsCurrencyPound as PoundIcon } from "react-icons/bs";
 export { BiRupee as RupeeIcon } from "react-icons/bi";
+export { FiChevronDown as ArrowUpSvgIcon } from "react-icons/fi";

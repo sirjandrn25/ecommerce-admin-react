@@ -31,7 +31,8 @@ const Tabs = ({
 }: TabInterface) => {
   const [active, setActive] = useState<string | number>(defaultActiveTab || 0);
   const [isActiveKey, setIsActiveKey] = useState<boolean>(false);
-  const { navigation, pathname, query } = useNavigation();
+  const { navigation, pathname, query = {} } = useNavigation();
+
   const handleNavigation = (activeTab: string | number) => {
     if (!isNavigation) return;
     navigation({
@@ -52,6 +53,7 @@ const Tabs = ({
 
     // decide active tab is key or index in navigation case
     let tabParam: any = query[navigation_key];
+
     if (isNavigation && tabParam) {
       if (!isUniqueTabsKey) tabParam = Number(tabParam);
       setActive(tabParam);

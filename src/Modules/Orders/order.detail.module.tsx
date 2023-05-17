@@ -1,22 +1,92 @@
 import Card from "@Components/Card/card.component";
 import Container from "@Components/Container/container.component";
-import React from "react";
+import React, { useMemo } from "react";
 import useOrderDetail from "./Hooks/useOrderDetail.hook";
 import useNavigation from "@Hooks/useNavigation.hook";
+import OrderItems from "./Components/orderItems.component";
+import Payments from "./Components/payments.component";
+import Tabs from "@Components/Tabs/tabs.component";
+import Badge from "@Components/Badge/badge.component";
+import { FormatCurrency } from "@Utils/currency.utils";
+import {
+  GenericDataRowDetailCard,
+  GenericDataRowDetailCardInterface,
+} from "@Components/Card/dataRow.component";
+import { FormatDisplayDate } from "@Utils/common.utils";
 
 const OrderDetailModule = () => {
   const { id } = useNavigation();
 
   const { details, isLoading } = useOrderDetail(id);
+
+  const order_info_props: GenericDataRowDetailCardInterface = {
+    title: "Order Info",
+    data_rows: [
+      {
+        label: "Order Id",
+        value: details?.display_id,
+      },
+      {
+        label: "Total Amount",
+        value: FormatCurrency(details?.amount || 0),
+      },
+      {
+        label: "Payment Status",
+        value: details?.payment_status,
+      },
+      {
+        label: "Payment By",
+        value: details?.payment_by,
+      },
+
+      {
+        label: "Created At",
+        value: FormatDisplayDate(details?.created_at),
+      },
+    ],
+  };
+  const total_payable = useMemo(() => {
+    return details?.amount || 0 + details?.tax || 0 + details?.discount || 0;
+  }, [details?.amount, details?.discount, details?.tax]);
+  const order_summary: GenericDataRowDetailCardInterface = {
+    title: "Order Summary",
+    data_rows: [
+      {
+        label: "Total Amount",
+        value: FormatCurrency(details?.amount || 0),
+      },
+      {
+        label: "Tax",
+        value: FormatCurrency(details?.tax || 0),
+      },
+      {
+        label: "Discount",
+        value: FormatCurrency(details?.discount || 0),
+      },
+      {
+        label: "Total Payable",
+        value: FormatCurrency(total_payable),
+        type: "net",
+      },
+    ],
+  };
+
   return (
     <Container>
       <div className="w-full gap-4 row-flex">
-        <Card title="Order Information" className="w-3/4 ">
-          Order Detail
-        </Card>
-        <Card title="Order Items" className="flex-1">
-          Product Detail
-        </Card>
+        <div className="w-3/5 ">
+          <Card title="Order Information">Order Detail</Card>
+        </div>
+        <div className="flex-1 gap-4 col-flex">
+          <div className="items-center justify-between p-4 rounded bg-neutral text-neutral-content row-flex">
+            <Badge appearance="success" label="Approved" />
+            <div className="gap-1 row-flex ">
+              <span className="text-error">Amount</span> : {FormatCurrency(20)}
+            </div>
+          </div>
+          <GenericDataRowDetailCard {...order_summary} />
+          <GenericDataRowDetailCard {...order_info_props} />
+        </div>
       </div>
     </Container>
   );
