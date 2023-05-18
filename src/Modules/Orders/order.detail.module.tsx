@@ -1,23 +1,20 @@
-import Card from "@Components/Card/card.component";
-import Container from "@Components/Container/container.component";
-import React, { useMemo } from "react";
-import useOrderDetail from "./Hooks/useOrderDetail.hook";
-import useNavigation from "@Hooks/useNavigation.hook";
-import OrderItems from "./Components/orderItems.component";
-import Payments from "./Components/payments.component";
-import Tabs from "@Components/Tabs/tabs.component";
 import Badge from "@Components/Badge/badge.component";
-import { FormatCurrency } from "@Utils/currency.utils";
 import {
   GenericDataRowDetailCard,
   GenericDataRowDetailCardInterface,
 } from "@Components/Card/dataRow.component";
+import Container from "@Components/Container/container.component";
+import useNavigation from "@Hooks/useNavigation.hook";
 import { FormatDisplayDate } from "@Utils/common.utils";
+import { FormatCurrency } from "@Utils/currency.utils";
+import { useMemo } from "react";
+import OrderItems from "./Components/orderItems.component";
+import useOrderDetail from "./Hooks/useOrderDetail.hook";
 
 const OrderDetailModule = () => {
   const { id } = useNavigation();
 
-  const { details, isLoading } = useOrderDetail(id);
+  const { details, isLoading, orderItems } = useOrderDetail(id);
 
   const order_info_props: GenericDataRowDetailCardInterface = {
     title: "Order Info",
@@ -75,7 +72,7 @@ const OrderDetailModule = () => {
     <Container>
       <div className="w-full gap-4 row-flex">
         <div className="w-3/5 ">
-          <Card title="Order Information">Order Detail</Card>
+          <OrderItems {...{ items: orderItems }} />
         </div>
         <div className="flex-1 gap-4 col-flex">
           <div className="items-center justify-between p-4 rounded bg-neutral text-neutral-content row-flex">

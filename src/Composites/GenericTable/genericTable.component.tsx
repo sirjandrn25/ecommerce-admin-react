@@ -1,4 +1,5 @@
 import ActionMenu from "@Components/ActionMenu/actionMenu.component";
+import Avatar from "@Components/Avatar/avatar.component";
 import Icon from "@Components/Icon/icon.component";
 import {
   SortUpDownArrow,
@@ -8,7 +9,12 @@ import {
   ArrowChevronRight,
   ArrowChevronLeft,
 } from "@Constants/imageMapping.constants";
-import { FormatDisplayDate, IsFunction } from "@Utils/common.utils";
+import {
+  FormatDisplayDate,
+  GetObjectPrefixValue,
+  IsFunction,
+  IsUndefined,
+} from "@Utils/common.utils";
 import { FormatCurrency } from "@Utils/currency.utils";
 import Link from "next/link";
 import { useState } from "react";
@@ -16,7 +22,7 @@ import { useState } from "react";
 export interface ColumnInterface {
   name: string;
   key: string;
-  type?: "date" | "date_time" | "currency" | string;
+  type?: "date" | "date_time" | "currency" | "stock" | "image" | string;
   sort?: boolean;
   className?: string;
   renderValue?: (data: any) => any;
@@ -188,19 +194,25 @@ const GenericTable = ({
   };
 
   const parseColumnItem = (item: any, column: any) => {
-    const value = item[column?.key];
+    const value = GetObjectPrefixValue(item, column.key);
 
     if (IsFunction(column?.renderValue)) return column?.renderValue(item);
     //parse url value
     let columnValue: any;
-    if (!value) return "-";
+    if (IsUndefined(value)) return "-";
     switch (column.type) {
       case "currency":
-        columnValue = FormatCurrency(value);
+        columnValue = FormatCurrency(value || 0);
         break;
       case "date":
         columnValue = FormatDisplayDate(value);
         break;
+      case "stock":
+        break;
+      case "image":
+        columnValue = <Avatar image={value} size="sm" shape="circle" />;
+        break;
+
       default:
         columnValue = value;
     }
