@@ -1,4 +1,4 @@
-import { asyncService } from "@Utils/service.utils";
+import { asyncService, sendRequest } from "@Utils/service.utils";
 import { useQuery } from "@tanstack/react-query";
 import { SubOrderController } from "src/Controllers/Order/suborder.controller";
 
@@ -16,14 +16,41 @@ const useOrderDetail = (id: number) => {
     queryKey: ["sub order items", id],
   });
 
-  const { isLoading, data } = useQuery({
+  const {
+    isLoading,
+    data,
+    refetch: fetchOrderDetail,
+  } = useQuery({
     queryFn: fetchDetail,
     queryKey: ["sub order details", id],
   });
+
+  const handleStatusChange = async (value: string) => {
+    const { success, response } = await sendRequest({
+      end_point: SubOrderController.statusChange(id),
+      method: "post",
+      classParams: {
+        status: value,
+      },
+    });
+    if (success) fetchOrderDetail();
+  };
+  const handlePaymentStatusChange = async (value: string) => {
+    const { success, response } = await sendRequest({
+      end_point: SubOrderController.statusChange(id),
+      method: "post",
+      classParams: {
+        payment_status: value,
+      },
+    });
+    if (success) fetchOrderDetail();
+  };
   return {
     isLoading,
     details: data as any,
     orderItems: orderItems as any[],
+    handlePaymentStatusChange,
+    handleStatusChange,
   };
 };
 

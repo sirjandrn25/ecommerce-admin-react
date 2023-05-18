@@ -10,6 +10,7 @@ import { FormatCurrency } from "@Utils/currency.utils";
 import { useMemo } from "react";
 import OrderItems from "./Components/orderItems.component";
 import useOrderDetail from "./Hooks/useOrderDetail.hook";
+import OrderStatusChange from "./Components/orderStatusChange.component";
 
 const OrderDetailModule = () => {
   const { id } = useNavigation();
@@ -27,10 +28,7 @@ const OrderDetailModule = () => {
         label: "Total Amount",
         value: FormatCurrency(details?.amount || 0),
       },
-      {
-        label: "Payment Status",
-        value: details?.payment_status,
-      },
+
       {
         label: "Payment By",
         value: details?.payment_by,
@@ -83,6 +81,7 @@ const OrderDetailModule = () => {
           </div>
           <GenericDataRowDetailCard {...order_summary} />
           <GenericDataRowDetailCard {...order_info_props} />
+          <OrderStatusChange />
         </div>
       </div>
     </Container>

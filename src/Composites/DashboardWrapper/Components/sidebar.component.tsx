@@ -110,7 +110,7 @@ const CustomSidebar = () => {
     );
   };
   return (
-    <Sidebar className="h-full !border-r-0 ">
+    <Sidebar className="min-h-screen !border-r-0  ">
       <Menu>
         <MenuItem
           className="border-b border-base-200 py-[7px] "

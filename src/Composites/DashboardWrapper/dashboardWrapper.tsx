@@ -23,7 +23,7 @@ const DashboardWrapper = ({ children }: dashboardWrapperProps) => {
     return <div>{children}</div>;
   }
   return (
-    <div className="flex w-screen h-screen bg-base-200">
+    <div className="flex w-screen max-h-full min-h-screen bg-base-200">
       <CustomSidebar />
 
       <main className="w-full h-full">
