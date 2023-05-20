@@ -1,4 +1,4 @@
-import Badge from "@Components/Badge/badge.component";
+import Card from "@Components/Card/card.component";
 import {
   GenericDataRowDetailCard,
   GenericDataRowDetailCardInterface,
@@ -10,12 +10,12 @@ import { FormatCurrency } from "@Utils/currency.utils";
 import { useMemo } from "react";
 import OrderItems from "./Components/orderItems.component";
 import useOrderDetail from "./Hooks/useOrderDetail.hook";
-import OrderStatusChange from "./Components/orderStatusChange.component";
 
 const OrderDetailModule = () => {
   const { id } = useNavigation();
 
-  const { details, isLoading, orderItems } = useOrderDetail(id);
+  const { details, isLoading, orderItems, handleStatusChange } =
+    useOrderDetail(id);
 
   const order_info_props: GenericDataRowDetailCardInterface = {
     title: "Order Info",
@@ -40,11 +40,30 @@ const OrderDetailModule = () => {
       },
     ],
   };
+
+  const order_summary: GenericDataRowDetailCardInterface = {
+    title: "Order Summary",
+    data_rows: [
+      {
+        label: "Order Date",
+        value: FormatDisplayDate(details?.created_at),
+      },
+      {
+        label: "Payment Method",
+        value: details?.payment_by,
+      },
+      {
+        label: "Shipping Method",
+        value: details?.payment_by,
+      },
+    ],
+    className: "flex-1 ",
+  };
   const total_payable = useMemo(() => {
     return details?.amount || 0 + details?.tax || 0 + details?.discount || 0;
   }, [details?.amount, details?.discount, details?.tax]);
-  const order_summary: GenericDataRowDetailCardInterface = {
-    title: "Order Summary",
+  const order_price: GenericDataRowDetailCardInterface = {
+    title: "Order Price",
     data_rows: [
       {
         label: "Total Amount",
@@ -59,29 +78,73 @@ const OrderDetailModule = () => {
         value: FormatCurrency(details?.discount || 0),
       },
       {
+        label: "Shipping Charge",
+        value: FormatCurrency(details?.discount || 20),
+      },
+      {
         label: "Total Payable",
         value: FormatCurrency(total_payable),
         type: "net",
       },
     ],
+    className: "flex-1",
+  };
+  const customer_detail: GenericDataRowDetailCardInterface = {
+    title: "Customer Details",
+    data_rows: [
+      {
+        label: "Name",
+        value: FormatCurrency(details?.amount || 0),
+      },
+      {
+        label: "Email",
+        value: FormatCurrency(details?.tax || 0),
+      },
+      {
+        label: "Mobile",
+        value: FormatCurrency(details?.discount || 0),
+      },
+    ],
+    className: "flex-1 h-full",
+  };
+  const deliver_address: GenericDataRowDetailCardInterface = {
+    title: "Deliver To",
+    data_rows: [
+      {
+        label: "House",
+        value: FormatCurrency(details?.amount || 0),
+      },
+      {
+        label: "Street",
+        value: FormatCurrency(details?.tax || 0),
+      },
+      {
+        label: "State",
+        value: FormatCurrency(details?.discount || 0),
+      },
+    ],
+    className: "flex-1 h-full",
   };
 
   return (
-    <Container>
-      <div className="w-full gap-4 row-flex">
-        <div className="w-3/5 ">
-          <OrderItems {...{ items: orderItems }} />
-        </div>
-        <div className="flex-1 gap-4 col-flex">
-          <div className="items-center justify-between p-4 rounded bg-neutral text-neutral-content row-flex">
-            <Badge appearance="success" label="Approved" />
-            <div className="gap-1 row-flex ">
-              <span className="text-error">Amount</span> : {FormatCurrency(20)}
-            </div>
+    <Container className="h-full pb-10 overflow-y-auto">
+      <div className="w-full gap-4 pb-20 h-fit col-flex">
+        <Card className="items-center justify-between row-flex">
+          <div className="items-center gap-1 row-flex">
+            <div className="font-medium ">Order ID</div>:
+            <div className="text-sm">{details?.display_id}</div>
           </div>
+        </Card>
+        <div className="items-center w-full gap-4 row-flex">
+          <GenericDataRowDetailCard {...customer_detail} />
+          <GenericDataRowDetailCard {...deliver_address} />
           <GenericDataRowDetailCard {...order_summary} />
-          <GenericDataRowDetailCard {...order_info_props} />
-          <OrderStatusChange />
+        </div>
+        <div className="items-center gap-4 row-flex">
+          <div className="w-2/3">
+            <OrderItems {...{ items: orderItems }} />
+          </div>
+          <GenericDataRowDetailCard {...order_price} />
         </div>
       </div>
     </Container>

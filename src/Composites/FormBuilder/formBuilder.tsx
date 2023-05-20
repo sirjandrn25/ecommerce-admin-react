@@ -25,7 +25,7 @@ const FormBuilder = forwardRef(
     }: FormInterface,
     ref: any
   ) => {
-    const { error, handleFormData, formData, onSubmit } = useForm(
+    const { error, handleFormData, formData, onSubmit, setFormData } = useForm(
       fields,
       data,
       handleSubmit,
@@ -35,8 +35,9 @@ const FormBuilder = forwardRef(
       ref,
       () => ({
         onSubmit,
+        setFormData,
       }),
-      [onSubmit]
+      [onSubmit, setFormData]
     );
 
     const hasError = useCallback(

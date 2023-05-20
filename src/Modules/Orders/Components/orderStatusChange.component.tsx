@@ -2,8 +2,9 @@ import Card from "@Components/Card/card.component";
 import SelectBox from "@Components/SelectBox/selecBox.component";
 import { FormInterface } from "@Composites/FormBuilder/Types/form.types";
 import FormBuilder from "@Composites/FormBuilder/formBuilder";
-import React, { useState } from "react";
-import { useUpdateEffect } from "react-use";
+import { IsEmptyObject } from "@Utils/common.utils";
+import React, { useEffect, useRef, useState } from "react";
+import { useRaf, useUpdateEffect } from "react-use";
 
 const orderStatus = [
   {
@@ -70,8 +71,24 @@ const OrderPaymentStatus = [
   },
 ];
 
-const OrderStatusChange = ({ value }: any) => {
-  const [info, setInfo] = useState<any>(value);
+const OrderStatusChange = ({
+  payment_status,
+  status,
+  handleStatusChange,
+}: any) => {
+  const formRef = useRef<any>(null);
+
+  useEffect(() => {
+    const current = formRef?.current;
+    if (!current || !payment_status || !status) return;
+    current?.setFormData((prev: any) => {
+      return {
+        ...prev,
+        payment_status,
+        status,
+      };
+    });
+  }, [formRef, payment_status, status]);
 
   const formSchema: FormInterface = {
     fields: [
@@ -90,12 +107,14 @@ const OrderStatusChange = ({ value }: any) => {
         options: OrderPaymentStatus,
       },
     ],
+    data: { payment_status, status },
+    handleSubmit: handleStatusChange,
+    layout: "two",
   };
 
-  useUpdateEffect(() => {}, [info]);
   return (
-    <Card title="Order Status">
-      <FormBuilder {...formSchema} />
+    <Card title="Order Status" className="flex-1">
+      <FormBuilder ref={formRef} {...formSchema} />
     </Card>
   );
 };

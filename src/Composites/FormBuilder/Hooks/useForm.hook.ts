@@ -96,6 +96,7 @@ const useForm = (
   realTimeValidate?: boolean
 ) => {
   const [error, setError] = useState<any>({});
+
   const [formData, setFormData] = useState<any>(data);
 
   const validationSchema = useMemo(() => {

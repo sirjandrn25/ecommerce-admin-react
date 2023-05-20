@@ -74,7 +74,7 @@ export const GenericDataRowDetailCard = ({
   cardClassName,
 }: GenericDataRowDetailCardInterface) => {
   return (
-    <Card className={titleClassName} title={title}>
+    <Card className={className} title={title}>
       {(data_rows || []).map((row: DataRowInterface, index: number) => {
         if (row?.visible === false) return null;
 
