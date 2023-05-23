@@ -1,6 +1,6 @@
 import Icon from "@Components/Icon/icon.component";
 import { PlusIcon } from "@Constants/imageMapping.constants";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import { useUpdateEffect } from "react-use";
@@ -111,6 +111,7 @@ const RenderSelectBox = ({
   addNew,
   isSearchable,
   placeholder,
+
   ...rest
 }: any) => {
   const error_color = "#dc143c";
@@ -126,6 +127,7 @@ const RenderSelectBox = ({
       // width: width,
       outline: 0,
     }),
+
     control: (base: any) => ({
       ...base,
       width: "100%",
@@ -149,15 +151,15 @@ const RenderSelectBox = ({
       return { ...provided, opacity, transition };
     },
   };
-  const GetLabel = () => {
-    const data = GetObjectFromArray(options, "value", defaultInputValue);
+  const displayValue = useMemo(() => {
+    const data = GetObjectFromArray(options, "value", inputValue);
 
-    return data?.label;
-  };
+    return data;
+  }, [inputValue, options]);
 
   if (async) {
     return (
-      <div className="flex items-center w-full">
+      <div className="z-10 flex items-center w-full">
         <AsyncSelect
           isSearchable={isSearchable}
           loadOptions={loadOptions}
@@ -166,7 +168,8 @@ const RenderSelectBox = ({
           className="flex-1 border-r-0"
           onChange={onChange}
           defaultOptions={options}
-          defaultInputValue={GetLabel()}
+          value={displayValue || undefined}
+          defaultValue={defaultInputValue}
           placeholder={"Search ..."}
         />
 
@@ -187,7 +190,8 @@ const RenderSelectBox = ({
     <Select
       options={options}
       onChange={(data) => onChange(data)}
-      defaultInputValue={GetLabel()}
+      value={displayValue}
+      defaultValue={defaultInputValue}
       styles={customStyles}
       placeholder={placeholder}
       {...rest}

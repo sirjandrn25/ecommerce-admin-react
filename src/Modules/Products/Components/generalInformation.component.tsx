@@ -1,3 +1,4 @@
+import FileUploaderInput from "@Components/FileUploader/fileUploaderInput.component";
 import CurrencyInput from "@Components/Input/currencyInput.component";
 import InputField from "@Components/Input/inputField.component";
 import AsyncSelectBox from "@Components/SelectBox/asyncSelectBox.component";
@@ -5,6 +6,7 @@ import SelectBox from "@Components/SelectBox/selecBox.component";
 import { openAddCategory } from "@Utils/function.utils";
 import { forwardRef, useImperativeHandle } from "react";
 import useProduct from "../Hooks/useProduct.hook";
+import StockUnitInput from "@Components/Input/stockUnitInput.component";
 
 const GeneralInformation = forwardRef((props, ref) => {
   const { handleFormData, onSubmit, formData, error } = useProduct();
@@ -55,7 +57,7 @@ const GeneralInformation = forwardRef((props, ref) => {
           </div>
         </WrapperBox>
         <WrapperBox>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid h-full grid-cols-2 gap-4">
             <CurrencyInput
               label="Selling Price "
               symbol="dollor"
@@ -76,6 +78,17 @@ const GeneralInformation = forwardRef((props, ref) => {
               isRequired
               onChange={(value) => {
                 handleFormData("cost_price", +value);
+              }}
+            />
+            <StockUnitInput
+              onChange={(value) => {
+                handleFormData("stock_unit_id", value?.stock_unit_id);
+                handleFormData("stock", value?.stock);
+              }}
+              label="Quantity"
+              stockInfo={{
+                stock_unit_id: formData?.stock_unit_id,
+                stock: formData?.stock,
               }}
             />
             <InputField
@@ -100,7 +113,7 @@ const GeneralInformation = forwardRef((props, ref) => {
               isRequired
               end_point="categories"
               label="Category"
-              defaultInputValue={formData?.category_id}
+              value={formData?.category_id}
               onChange={(option) => {
                 handleFormData("category_id", option?.value);
               }}
@@ -119,8 +132,26 @@ const GeneralInformation = forwardRef((props, ref) => {
         </WrapperBox>
         <WrapperBox title="Files Information">
           <div className="gap-4 col-flex">
-            <InputField type="file" label="Thumbnail" />
-            <InputField type="file" label="Images" />
+            <FileUploaderInput
+              label="Thumbnail"
+              {...{
+                isMultiple: false,
+                onChange: (files) => {
+                  handleFormData("thumbnail", files[0]);
+                },
+                files: formData?.thumbnail ? [formData?.thumbnail] : [],
+              }}
+            />
+
+            <FileUploaderInput
+              label="Images"
+              {...{
+                onChange: (files) => {
+                  handleFormData("images", files);
+                },
+              }}
+              files={formData?.images || []}
+            />
           </div>
         </WrapperBox>
       </div>

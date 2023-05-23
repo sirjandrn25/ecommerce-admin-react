@@ -1,7 +1,6 @@
 import GenericListing, {
   GenericListingInterface,
 } from "@Composites/GenericListing/genericListing";
-import { PRODUCT_API_ROUTE } from "@Constants/apiRoute.constant";
 import {
   PRODUCT_CREATE_ROUTE,
   PRODUCT_EDIT_ROUTE,
@@ -52,15 +51,13 @@ const ProductListModule = () => {
         },
         {
           name: "Inventory",
-          key: "inventory",
+          key: "stock",
           renderValue: (item: any) => {
-            const quantiy = item?.variants?.reduce(
-              (acc: number, value: any) => {
-                return acc + value?.stock || 0;
-              },
-              0
+            return (
+              <div>
+                {item?.stock} {item?.stock_unit?.name || ""}
+              </div>
             );
-            return <div>{quantiy}</div>;
           },
         },
         {
@@ -70,6 +67,7 @@ const ProductListModule = () => {
         {
           name: "Date",
           key: "created_at",
+          type: "date",
         },
       ],
     },

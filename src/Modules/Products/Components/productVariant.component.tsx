@@ -9,7 +9,6 @@ import SelectBox, {
   parseSelectBoxValue,
 } from "@Components/SelectBox/selecBox.component";
 import GenericTable from "@Composites/GenericTable/genericTable.component";
-import useCurrency from "@Hooks/useCurrency.hook";
 import { Capitalize, EmptyFunction } from "@Utils/common.utils";
 import ModalUtil from "@Utils/modal.utils";
 import { sendRequest } from "@Utils/service.utils";
@@ -18,7 +17,7 @@ import useProduct from "../Hooks/useProduct.hook";
 import useProductVariant from "../Hooks/useProductVariant.hook";
 import useProductOption from "../Hooks/userProductOptions.hook";
 import ProductOption from "./productOption.component";
-import error from "next/error";
+import StockUnitInput from "@Components/Input/stockUnitInput.component";
 
 const ProductVariant = () => {
   const { data } = useProductVariant();
@@ -129,17 +128,29 @@ const VariantForm = ({ item, callback = EmptyFunction }: any) => {
     <ModalContainer title="Create Variant">
       <ModalBody>
         <div className="gap-4 col-flex">
-          <div className="flex items-end justify-between gap-4 ">
+          <div className="grid grid-cols-2 gap-4">
             <InputField
               value={item?.title}
               label="Title"
-              className="flex-1"
+              className="w-full"
               placeholder="Colors"
               onChange={(value: string) => {
                 handleFormData("title", value);
               }}
             />
-            <InputField
+            <StockUnitInput
+              onChange={(value) => {
+                handleFormData("stock_unit_id", value?.stock_unit_id);
+                handleFormData("stock", value?.stock);
+              }}
+              label="Quantity"
+              stockInfo={{
+                stock_unit_id: item?.stock_unit_id,
+                stock: item?.stock,
+              }}
+              isRequired
+            />
+            {/* <InputField
               value={item?.title}
               label="Quantity"
               className="flex-1"
@@ -149,7 +160,7 @@ const VariantForm = ({ item, callback = EmptyFunction }: any) => {
                 handleFormData("stock", +value);
               }}
               isRequired
-            />
+            /> */}
           </div>
           <div className="items-center justify-between gap-4 row-flex">
             <CurrencyInput

@@ -1,6 +1,6 @@
 import Container from "@Components/Container/container.component";
 import React, { useRef } from "react";
-import GeneralInformation from "./generalInformation.componen";
+import GeneralInformation from "./generalInformation.component";
 import Button from "@Components/Button/button.component";
 
 const AddProduct = () => {

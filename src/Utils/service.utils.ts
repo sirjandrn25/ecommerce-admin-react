@@ -9,6 +9,8 @@ type sendRequestProps = {
   attachSessionId?: boolean;
   classParams?: any;
   document_id?: number | string;
+  headers?: any;
+  formData?: any;
 };
 
 const getToken = () => {
@@ -26,6 +28,8 @@ export const sendRequest = async ({
   method = "get",
   attachSessionId = true,
   classParams = {},
+  headers = {},
+  formData,
 }: sendRequestProps) => {
   try {
     const base_url = `${BASE_URL}/${end_point}`;
@@ -34,7 +38,7 @@ export const sendRequest = async ({
 
     let params = {
       method: method,
-      data: classParams,
+      data: formData || classParams,
       url: full_url,
     };
 
@@ -48,7 +52,7 @@ export const sendRequest = async ({
       }
 
       const config = {
-        headers: { Authorization: `${token}` },
+        headers: { Authorization: `${token}`, ...headers },
       };
 
       params = {

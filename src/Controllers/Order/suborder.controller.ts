@@ -10,4 +10,10 @@ export class SubOrderController {
   static orderItems(id: number) {
     return `sub-orders/${id}/items`;
   }
+  static statusChange(id: number) {
+    return `sub-orders/${id}/status`;
+  }
+  static paymentStatusChange(id: number) {
+    return `sub-orders/${id}/payment_status`;
+  }
 }

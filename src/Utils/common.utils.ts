@@ -1,3 +1,6 @@
+import { DISPLAY_DATE_FORMAT } from "@Constants/date.constant";
+import { PaymentMethodType } from "@Constants/preferences.constant";
+import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
 export const EmptyFunction = () => {
@@ -68,4 +71,40 @@ export const IsFunction = (value: any) => {
 };
 export const IsUndefined = (value: any) => {
   return typeof value === "undefined";
+};
+
+export const IsUndefinedOrNull = (value: any) => {
+  if (IsUndefined(value)) return true;
+  return value === null;
+};
+
+export const GetDateValue = (value: string) => {
+  return new Date(value);
+};
+
+export const FormatDisplayDate = (value: any) => {
+  if (!value) return value;
+  return format(GetDateValue(value), DISPLAY_DATE_FORMAT);
+};
+
+export const GetObjectPrefixValue = (obj: any = {}, key: string) => {
+  const keys = key.split(".");
+
+  const lastKey = keys.pop();
+  if (!lastKey) return null;
+  if (!keys?.length) return obj[lastKey];
+  let pointer = keys.reduce((acc: any, key: string) => {
+    const value = acc[key];
+
+    if (IsUndefinedOrNull(value)) {
+      return {};
+    }
+    return value;
+  }, obj);
+
+  return pointer[lastKey];
+};
+
+export const getPaymentMethod = (payment_by: "COD" | "BANK" | "PG") => {
+  return PaymentMethodType[payment_by];
 };
