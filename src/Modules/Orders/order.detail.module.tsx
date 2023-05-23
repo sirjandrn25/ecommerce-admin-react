@@ -5,16 +5,21 @@ import {
 } from "@Components/Card/dataRow.component";
 import Container from "@Components/Container/container.component";
 import useNavigation from "@Hooks/useNavigation.hook";
-import { FormatDisplayDate } from "@Utils/common.utils";
+import {
+  Capitalize,
+  FormatDisplayDate,
+  getPaymentMethod,
+} from "@Utils/common.utils";
 import { FormatCurrency } from "@Utils/currency.utils";
 import { useMemo } from "react";
 import OrderItems from "./Components/orderItems.component";
+import OrderStatusChange from "./Components/orderStatusChange.component";
 import useOrderDetail from "./Hooks/useOrderDetail.hook";
 
 const OrderDetailModule = () => {
   const { id } = useNavigation();
 
-  const { details, isLoading, orderItems, handleStatusChange } =
+  const { details, isLoading, orderItems, handleStatusChange, total_amount } =
     useOrderDetail(id);
 
   const order_info_props: GenericDataRowDetailCardInterface = {
@@ -50,7 +55,7 @@ const OrderDetailModule = () => {
       },
       {
         label: "Payment Method",
-        value: details?.payment_by,
+        value: getPaymentMethod(details?.payment_by),
       },
       {
         label: "Shipping Method",
@@ -60,14 +65,15 @@ const OrderDetailModule = () => {
     className: "flex-1 ",
   };
   const total_payable = useMemo(() => {
-    return details?.amount || 0 + details?.tax || 0 + details?.discount || 0;
-  }, [details?.amount, details?.discount, details?.tax]);
+    return total_amount + 20 + (details?.tax || 0) + (details?.discount || 0);
+  }, [details?.discount, details?.tax, total_amount]);
+  const { shipping_address, customer } = details?.order || {};
   const order_price: GenericDataRowDetailCardInterface = {
     title: "Order Price",
     data_rows: [
       {
         label: "Total Amount",
-        value: FormatCurrency(details?.amount || 0),
+        value: FormatCurrency(total_amount || 0),
       },
       {
         label: "Tax",
@@ -89,42 +95,6 @@ const OrderDetailModule = () => {
     ],
     className: "flex-1",
   };
-  const customer_detail: GenericDataRowDetailCardInterface = {
-    title: "Customer Details",
-    data_rows: [
-      {
-        label: "Name",
-        value: FormatCurrency(details?.amount || 0),
-      },
-      {
-        label: "Email",
-        value: FormatCurrency(details?.tax || 0),
-      },
-      {
-        label: "Mobile",
-        value: FormatCurrency(details?.discount || 0),
-      },
-    ],
-    className: "flex-1 h-full",
-  };
-  const deliver_address: GenericDataRowDetailCardInterface = {
-    title: "Deliver To",
-    data_rows: [
-      {
-        label: "House",
-        value: FormatCurrency(details?.amount || 0),
-      },
-      {
-        label: "Street",
-        value: FormatCurrency(details?.tax || 0),
-      },
-      {
-        label: "State",
-        value: FormatCurrency(details?.discount || 0),
-      },
-    ],
-    className: "flex-1 h-full",
-  };
 
   return (
     <Container className="h-full pb-10 overflow-y-auto">
@@ -134,10 +104,13 @@ const OrderDetailModule = () => {
             <div className="font-medium ">Order ID</div>:
             <div className="text-sm">{details?.display_id}</div>
           </div>
+          <OrderStatusChange {...{ handleStatusChange, ...details }} />
         </Card>
         <div className="items-center w-full gap-4 row-flex">
-          <GenericDataRowDetailCard {...customer_detail} />
-          <GenericDataRowDetailCard {...deliver_address} />
+          <CustomerInfo
+            {...{ ...customer, mobile: shipping_address?.mobile }}
+          />
+          <DeliveryAddress {...{ shipping_address }} />
           <GenericDataRowDetailCard {...order_summary} />
         </div>
         <div className="items-center gap-4 row-flex">
@@ -149,6 +122,53 @@ const OrderDetailModule = () => {
       </div>
     </Container>
   );
+};
+
+const DeliveryAddress = ({ shipping_address }: any) => {
+  const deliver_address: GenericDataRowDetailCardInterface = {
+    title: "Deliver To",
+    data_rows: [
+      {
+        label: "Address",
+        value: shipping_address?.address,
+      },
+      {
+        label: "City",
+        value: shipping_address?.city,
+      },
+      {
+        label: "State",
+        value: shipping_address?.provinance,
+      },
+    ],
+    className: "flex-1 h-full",
+  };
+  return <GenericDataRowDetailCard {...deliver_address} />;
+};
+
+const CustomerInfo = ({ first_name, last_name, mobile, email }: any) => {
+  const fullName = useMemo(() => {
+    return `${Capitalize(first_name)} ${Capitalize(last_name)}`;
+  }, [first_name, last_name]);
+  const customer_detail: GenericDataRowDetailCardInterface = {
+    title: "Customer Details",
+    data_rows: [
+      {
+        label: "Name",
+        value: fullName,
+      },
+      {
+        label: "Email",
+        value: email,
+      },
+      {
+        label: "Mobile",
+        value: mobile,
+      },
+    ],
+    className: "flex-1 h-full",
+  };
+  return <GenericDataRowDetailCard {...customer_detail} />;
 };
 
 export default OrderDetailModule;

@@ -1,10 +1,7 @@
-import Card from "@Components/Card/card.component";
-import SelectBox from "@Components/SelectBox/selecBox.component";
+import Button from "@Components/Button/button.component";
 import { FormInterface } from "@Composites/FormBuilder/Types/form.types";
 import FormBuilder from "@Composites/FormBuilder/formBuilder";
-import { IsEmptyObject } from "@Utils/common.utils";
-import React, { useEffect, useRef, useState } from "react";
-import { useRaf, useUpdateEffect } from "react-use";
+import { useEffect, useRef } from "react";
 
 const orderStatus = [
   {
@@ -33,16 +30,6 @@ const orderStatus = [
     value: "CANCELED",
   },
 ];
-
-// enum PaymentStatus {
-//   UNPAID
-//   PAID
-//   PARTIALLY_PAID
-//   PARTIALLY_REFUNDED
-//   ADVANCED
-//   REFUNDED
-//   CANCELED
-// }
 
 const OrderPaymentStatus = [
   {
@@ -93,14 +80,12 @@ const OrderStatusChange = ({
   const formSchema: FormInterface = {
     fields: [
       {
-        label: "Status",
         name: "status",
         type: "select",
         placeholder: "Choose Order status",
         options: orderStatus,
       },
       {
-        label: "Payment Status",
         name: "payment_status",
         type: "select",
         placeholder: "Choose Order status",
@@ -110,12 +95,29 @@ const OrderStatusChange = ({
     data: { payment_status, status },
     handleSubmit: handleStatusChange,
     layout: "two",
+    className: "!row-flex items-center !p-0",
   };
 
   return (
-    <Card title="Order Status" className="flex-1">
-      <FormBuilder ref={formRef} {...formSchema} />
-    </Card>
+    <div className="items-center gap-4 row-flex">
+      <FormBuilder ref={formRef} {...formSchema}>
+        {({ onSubmit }) => {
+          return (
+            <div className="items-center row-flex">
+              <Button
+                size="sm"
+                color="success"
+                onClick={onSubmit}
+                progress
+                outline
+              >
+                Save
+              </Button>
+            </div>
+          );
+        }}
+      </FormBuilder>
+    </div>
   );
 };
 

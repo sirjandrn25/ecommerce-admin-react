@@ -9,7 +9,7 @@ export interface ValidationInterface {
 }
 
 export type SchemaBaseType = InputBaseType & {
-  label: string;
+  label?: string;
   name: string;
   isRequired?: boolean;
   validation?: ValidationInterface;
@@ -35,7 +35,7 @@ export type InputOrSelectType = SchemaInputType | SelectSchemaType;
 export type SchemaType = InputOrSelectType | ObjectSchemaType;
 
 type childrenType = {
-  onSubmit: () => void;
+  onSubmit: (data: any) => void;
   error: any;
   formData: any;
 };
@@ -47,7 +47,7 @@ export interface FormInterface {
   layout?: "one" | "two" | "three";
   handleSubmit?: any;
   realTimeValidate?: boolean;
-  children?: (data: childrenType) => void;
+  children?: (data: childrenType) => any;
   submitLabel?: string | any;
   hiddenSubmit?: boolean;
 }

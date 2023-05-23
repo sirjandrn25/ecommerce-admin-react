@@ -21,6 +21,7 @@ const FormBuilder = forwardRef(
       handleSubmit = EmptyFunction,
       realTimeValidate = false,
       submitLabel,
+      children,
       ...rest
     }: FormInterface,
     ref: any
@@ -102,13 +103,6 @@ const FormBuilder = forwardRef(
           return `${className} grid-cols-1`;
       }
     }, [layout]);
-    function children(arg0: {
-      onSubmit: (next?: any) => void;
-      error: any;
-      formData: any;
-    }): import("react").ReactNode {
-      throw new Error("Function not implemented.");
-    }
 
     return (
       <form
@@ -117,9 +111,13 @@ const FormBuilder = forwardRef(
         }}
         ref={ref}
       >
-        <div className={`p-4 flex flex-col gap-4 ${className} `}>
+        <div
+          className={`p-4 flex ${
+            !children ? `flex-col` : ""
+          } gap-4 ${className} `}
+        >
           <div className={layoutClass}>{renderSchema()}</div>
-          {rest?.children ? (
+          {children ? (
             children({ onSubmit, error, formData })
           ) : rest?.hiddenSubmit ? null : (
             <Button progress onClick={onSubmit}>

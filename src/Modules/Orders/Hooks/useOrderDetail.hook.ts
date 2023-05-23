@@ -1,6 +1,7 @@
 import { EmptyFunction } from "@Utils/common.utils";
 import { asyncService, sendRequest } from "@Utils/service.utils";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { SubOrderController } from "src/Controllers/Order/suborder.controller";
 
 const useOrderDetail = (id: number) => {
@@ -40,22 +41,20 @@ const useOrderDetail = (id: number) => {
     next();
     if (success) fetchOrderDetail();
   };
-  // const handlePaymentStatusChange = async (value: string) => {
-  //   const { success, response } = await sendRequest({
-  //     end_point: SubOrderController.statusChange(id),
-  //     method: "post",
-  //     classParams: {
-  //       payment_status: value,
-  //     },
-  //   });
-  //   if (success) fetchOrderDetail();
-  // };
+
+  const total_amount = useMemo(() => {
+    return (orderItems as any).reduce((acc: number, item: any) => {
+      console.log({ item });
+      return acc + item?.order_item?.unit_price * item?.order_item?.quantity;
+    }, 0);
+  }, [orderItems]);
   return {
     isLoading,
     details: data as any,
     orderItems: orderItems as any[],
     // handlePaymentStatusChange,
     handleStatusChange,
+    total_amount,
   };
 };
 

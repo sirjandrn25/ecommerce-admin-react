@@ -1,4 +1,5 @@
 import { DISPLAY_DATE_FORMAT } from "@Constants/date.constant";
+import { PaymentMethodType } from "@Constants/preferences.constant";
 import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
@@ -102,4 +103,8 @@ export const GetObjectPrefixValue = (obj: any = {}, key: string) => {
   }, obj);
 
   return pointer[lastKey];
+};
+
+export const getPaymentMethod = (payment_by: "COD" | "BANK" | "PG") => {
+  return PaymentMethodType[payment_by];
 };

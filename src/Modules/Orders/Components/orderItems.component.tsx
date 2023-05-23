@@ -1,9 +1,6 @@
-import Card from "@Components/Card/card.component";
 import GenericTable, {
   ColumnInterface,
-  GenericTableProps,
 } from "@Composites/GenericTable/genericTable.component";
-import React from "react";
 
 const OrderItems = ({ items = [] }: any) => {
   const columns: ColumnInterface[] = [
@@ -26,6 +23,11 @@ const OrderItems = ({ items = [] }: any) => {
     },
     {
       name: "Price",
+      key: "order_item.unit_price",
+      type: "currency",
+    },
+    {
+      name: "Total",
       key: "order_item.unit_price",
       type: "currency",
     },
