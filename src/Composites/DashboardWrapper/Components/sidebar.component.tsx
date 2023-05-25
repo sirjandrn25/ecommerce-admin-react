@@ -17,6 +17,10 @@ import {
 } from "@Constants/imageMapping.constants";
 import useNavigation from "@Hooks/useNavigation.hook";
 import { resolveNavigation } from "@Utils/common.utils";
+import {
+  ORDER_LIST_ROUTE,
+  PRODUCT_LIST_ROUTE,
+} from "@Constants/route.constant";
 
 interface MenuBaseItemIterface {
   name: string;
@@ -41,14 +45,14 @@ const menus: MenuItemIterface[] = [
     name: "Orders",
     icon: DollorIcon,
 
-    url: "orders",
+    url: ORDER_LIST_ROUTE,
   },
   {
     name: "Products",
     //   border: false,
     icon: ProductIcon,
 
-    url: "products",
+    url: PRODUCT_LIST_ROUTE,
   },
 
   {
