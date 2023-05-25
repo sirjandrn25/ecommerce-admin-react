@@ -1,7 +1,3 @@
-import React from "react";
+import LandingModule from "@Modules/Storefront/Landing/landing.module";
 
-const Dashboard = () => {
-	return <div>Dashboard</div>;
-};
-
-export default Dashboard;
+export default LandingModule;

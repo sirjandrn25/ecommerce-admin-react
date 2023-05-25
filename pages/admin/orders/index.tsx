@@ -1,3 +1,3 @@
-import OrderListModule from "@Modules/Orders/orders.list.module";
+import OrderListModule from "@Modules/Admin/Orders/orders.list.module";
 
 export default OrderListModule;

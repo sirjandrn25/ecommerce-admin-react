@@ -1,3 +1,3 @@
-import AddProduct from "@Modules/Products/Components/addProduct.component";
+import AddProduct from "@Modules/Admin/Products/Components/addProduct.component";
 
 export default AddProduct;

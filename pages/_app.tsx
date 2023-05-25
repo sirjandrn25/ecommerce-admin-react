@@ -13,6 +13,7 @@ import { ProSidebarProvider } from "react-pro-sidebar";
 import { store } from "src/Store/store";
 import { Provider } from "react-redux";
 import { useRouter } from "next/router";
+import StoreFrontDashboard from "@Composites/DashboardWrapper/storeFrontDashboard";
 
 const queryClient = new QueryClient();
 
@@ -44,7 +45,11 @@ export default function App({ Component, pageProps }: AppProps) {
   const RenderWrapper = useCallback(() => {
     const isAdmin = asPath.includes("/admin");
     if (isAdmin) return <AdminWrapper />;
-    return <Component {...pageProps} />;
+    return (
+      <StoreFrontDashboard>
+        <Component {...pageProps} />;
+      </StoreFrontDashboard>
+    );
   }, [AdminWrapper, Component, asPath, pageProps]);
   return (
     <QueryClientProvider client={queryClient}>

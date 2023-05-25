@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import useNavigation from "../../Hooks/useNavigation.hook";
+import useNavigation from "../../../Hooks/useNavigation.hook";
 
 const Login = lazy(() => import("./Components/login.component"));
 const Register = lazy(() => import("./Components/register.component"));

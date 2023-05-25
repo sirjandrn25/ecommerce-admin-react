@@ -1,4 +1,4 @@
-import AddCategoryForm from "@Modules/Products/Components/addCategory.form";
+import AddCategoryForm from "@Modules/Admin/Products/Components/addCategory.form";
 import { EmptyFunction } from "./common.utils";
 import SlidingPaneUtil from "./slidingPane.utils";
 

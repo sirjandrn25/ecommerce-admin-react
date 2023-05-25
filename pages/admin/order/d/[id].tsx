@@ -1,3 +1,3 @@
-import OrderDetailModule from "@Modules/Orders/order.detail.module";
+import OrderDetailModule from "@Modules/Admin/Orders/order.detail.module";
 
 export default OrderDetailModule;

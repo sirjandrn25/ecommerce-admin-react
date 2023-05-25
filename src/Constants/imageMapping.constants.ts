@@ -25,3 +25,5 @@ export { FiUploadCloud as FileUploaderIcon } from "react-icons/fi";
 export { BsCurrencyPound as PoundIcon } from "react-icons/bs";
 export { BiRupee as RupeeIcon } from "react-icons/bi";
 export { FiChevronDown as ArrowUpSvgIcon } from "react-icons/fi";
+export { FaUserTie as AvatarUser } from "react-icons/fa";
+export { FaShoppingCart as CartIcon } from "react-icons/fa";
