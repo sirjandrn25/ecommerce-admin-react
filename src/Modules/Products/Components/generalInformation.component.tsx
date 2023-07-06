@@ -128,6 +128,25 @@ const GeneralInformation = forwardRef((props, ref) => {
                 handleFormData("tags", value);
               }}
             />
+            <SelectBox
+
+              label="Status"
+              placeholder="Enter status"
+              value={formData?.status}
+              options={[
+                {
+                  label: "PUBLISHED",
+                  value: "PUBLISHED",
+                },
+                {
+                  label: "DRAFT",
+                  value: "DRAFT",
+                },
+              ]}
+              onChange={(option) => {
+                handleFormData("status", option?.value);
+              }}
+            />
           </div>
         </WrapperBox>
         <WrapperBox title="Files Information">

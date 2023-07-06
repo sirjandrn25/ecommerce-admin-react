@@ -6,6 +6,7 @@ const getSchemaElement = (type: string) => {
   const elements: any = {
     select: SelectBox,
     async_select: AsyncSelectBox,
+
     text: InputField,
   };
 

@@ -4,6 +4,7 @@ import GeneralInformation from "./Components/generalInformation.component";
 import ProductVariant from "./Components/productVariant.component";
 import { useRef } from "react";
 import Button from "@Components/Button/button.component";
+import ProductOption from "./Components/productOption.component";
 
 const ProductModule = () => {
   const generalRef = useRef<any>(null);
@@ -13,17 +14,31 @@ const ProductModule = () => {
       {
         name: "General",
         key: "general",
-        component: <GeneralInformation ref={generalRef} />,
+        component: (
+          <GeneralInformation
+
+          />
+        ),
       },
       {
-        name: "Variantion",
-        key: "variantion",
-        component: <ProductVariant />,
+        name: "Product Option",
+        key: "option",
+        component: <ProductVariantContainer />,
       },
       {
-        name: "Shipping",
+        name: "Product Variant",
+        key: "variant",
+        component: (
+          <ProductVariant
+
+
+          />
+        ),
+      },
+      {
+        name: "Shipping Information",
         key: "shipping",
-        component: <div>Shipping </div>,
+        component: <div>Product Shipping Information</div>,
       },
     ],
     tabContentClassName: "!p-0",
@@ -53,5 +68,17 @@ const ProductModule = () => {
     </Container>
   );
 };
+
+const ProductVariantContainer = () => {
+
+
+  return (
+    <div className="flex flex-col items-center h-full gap-4 p-4">
+      <div className="flex justify-end w-full gap-4">
+        <ProductOption />
+      </div>
+    </div>
+  )
+}
 
 export default ProductModule;

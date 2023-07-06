@@ -9,6 +9,8 @@ import { useEffectOnce } from "react-use";
 const useProduct = () => {
   const { query, navigation } = useNavigation();
   const { id } = query || {};
+ 
+  
 
   useEffectOnce(() => {
     fetchProductDetail();
@@ -71,7 +73,7 @@ const useProduct = () => {
 
   const handleSubmit = async (values: any, next = EmptyFunction) => {
     const { success, response } = await sendRequest({
-      end_point: id ? `products/${+id}` : "products",
+      end_point: id ? `products/${id}` : "products",
       method: id ? "put" : "post",
       classParams: {
         ...sanitizeData(values),
@@ -95,9 +97,10 @@ const useProduct = () => {
   );
 
   const fetchProductDetail = async () => {
+    
     if (!id || formData?.id) return;
     const { success, response } = await sendRequest({
-      end_point: `products/${+id}`,
+      end_point: `products/${id}`,
     });
 
     if (success) {

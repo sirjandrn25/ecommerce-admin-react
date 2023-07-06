@@ -1,228 +1,207 @@
-import Button from "@Components/Button/button.component";
-import CurrencyInput from "@Components/Input/currencyInput.component";
-import InputField from "@Components/Input/inputField.component";
-import ModalContainer, {
-  ModalBody,
-  ModalFooter,
-} from "@Components/Modal/modalContainer.component";
-import SelectBox, {
-  parseSelectBoxValue,
-} from "@Components/SelectBox/selecBox.component";
-import GenericTable from "@Composites/GenericTable/genericTable.component";
-import { Capitalize, EmptyFunction } from "@Utils/common.utils";
-import ModalUtil from "@Utils/modal.utils";
-import { sendRequest } from "@Utils/service.utils";
-import { useState } from "react";
-import useProduct from "../Hooks/useProduct.hook";
-import useProductVariant from "../Hooks/useProductVariant.hook";
-import useProductOption from "../Hooks/userProductOptions.hook";
-import ProductOption from "./productOption.component";
-import StockUnitInput from "@Components/Input/stockUnitInput.component";
+import Button from "@Components/Button/button.component"
+import Loading from "@Components/Loading/loading.component"
+import SelectBox, { parseSelectBoxValue } from "@Components/SelectBox/selecBox.component"
+import { Capitalize } from "@Utils/common.utils"
+import { FormatCurrency } from "@Utils/currency.utils"
+import { Edit, Trash2 } from "lucide-react"
+import { useCallback, useMemo } from "react"
+import useProductVariant from "../Hooks/useProductVariant.hook"
 
-const ProductVariant = () => {
-  const { data } = useProductVariant();
+const ProductVariant = ({ productId, selling_price }: any) => {
 
-  const openVariantForm = (index?: number) => {
-    ModalUtil.open({
-      component: VariantForm,
-      modalSize: "lg",
-      props: {
-        callback: (data: any) => {
-          ModalUtil.close();
-        },
-      },
-    });
-  };
-  const openProductOptionForm = () => {
-    ModalUtil.open({
-      component: ProductOption,
-      modalSize: "lg",
-      props: {
-        callback: (data: any) => {
-          ModalUtil.close();
-        },
-      },
-    });
-  };
+  const { data: variants, fetchVariants, setFormData, isLoading: variantLoading, onSubmit, renderFormField, createLoading, setEditId, selectedValues, setSelectedValues, isEdit, options } = useProductVariant()
 
-  return (
-    <div className="gap-4 p-4 rounded-lg col-flex bg-base-100">
-      <div className="flex items-center justify-end gap-4">
-        <Button onClick={() => openProductOptionForm()} outline size="sm">
-          Add Option
-        </Button>
-        <Button onClick={() => openVariantForm()} outline size="sm">
-          Add New
-        </Button>
-      </div>
 
-      <VariantItems {...{ data }} />
-    </div>
-  );
-};
 
-const VariantItems = ({ data = [], onRemove, onEdit }: any) => {
-  const columns = [
-    {
-      name: "name",
-      key: "title",
-    },
-    {
-      name: "Inventory",
-      key: "stock",
-    },
-  ];
 
-  return <GenericTable {...{ columns, data }} />;
-};
 
-const VariantForm = ({ item, callback = EmptyFunction }: any) => {
-  const [variantForm, setVariantForm] = useState<any>({});
-  const { data: options } = useProductOption();
-  const { formData: product } = useProduct();
-  const optionValue = (option: any) => {
-    const values = variantForm?.values || {};
-    return values[option?.id];
-  };
-  const handleFormData = (key: string, value: any) =>
-    setVariantForm((prev: any) => {
+  // const { mutate: createVariant, isLoading: creatingVariant } =
+  //   api.admin.productVariant.create.useMutation({
+  //     onSuccess: (_: any) => {
+  //       fetchVariants()
+  //       handleResetForm({ selling_price })
+  //       setEditId(undefined)
+  //       setSelectedValues({})
+  //       toast({
+  //         variant: "default",
+  //         title: "Successfully saved variant",
+  //       })
+  //     },
+  //   })
+
+
+  // const onSave = (values: any) => {
+
+  //   if (!isEdit)
+  //     return createVariant({
+  //       ...values,
+  //       option_values: Object.values(selectedValues),
+  //       product_id: productId,
+  //     })
+
+  //   return createVariant({
+  //     ...values,
+  //     product_id: productId,
+  //     id: editId,
+  //     option_values: [],
+  //   })
+  // }
+
+
+
+  const handleSelect = (key: string, value: any) =>
+    setSelectedValues((prev: any) => {
       return {
         ...prev,
         [key]: value,
-      };
-    });
+      }
+    })
 
-  const handleValues = (key: string, value: any) => {
-    const values = variantForm?.option_values || {};
-    handleFormData("option_values", {
-      ...values,
-      [key]: value,
-    });
-  };
-  const sanitizeData = () => {
-    const newData = { ...variantForm };
+  const renderLoading = () => {
+    let loading_message = ""
+    if (createLoading) {
+      loading_message = "Creating Variant..."
+    }
+    else if (variantLoading) {
+      loading_message === "fetching product variants..."
+    }
+    if (loading_message) {
+      return <Loading message={loading_message} />
+    }
+  }
 
-    const option_values = [];
-    for (let value of Object.values(newData.option_values)) {
-      option_values.push({ id: value });
-    }
-    newData.option_values = option_values;
-    return newData;
-  };
-  const handleSave = async (next = EmptyFunction) => {
-    const { success } = await sendRequest({
-      end_point: "/product-variants",
-      method: "post",
-      classParams: {
-        ...sanitizeData(),
-        product_id: product?.id,
-      },
-    });
-    if (success) {
-      callback();
-    }
-    next();
-  };
+  const handleEdit = (item: any) => {
+    setFormData(item)
+    setEditId(item?.id)
+  }
 
   return (
-    <ModalContainer title="Create Variant">
-      <ModalBody>
-        <div className="gap-4 col-flex">
-          <div className="grid grid-cols-2 gap-4">
-            <InputField
-              value={item?.title}
-              label="Title"
-              className="w-full"
-              placeholder="Colors"
-              onChange={(value: string) => {
-                handleFormData("title", value);
-              }}
-            />
-            <StockUnitInput
-              onChange={(value) => {
-                handleFormData("stock_unit_id", value?.stock_unit_id);
-                handleFormData("stock", value?.stock);
-              }}
-              label="Quantity"
-              stockInfo={{
-                stock_unit_id: item?.stock_unit_id,
-                stock: item?.stock,
-              }}
-              isRequired
-            />
-            {/* <InputField
-              value={item?.title}
-              label="Quantity"
-              className="flex-1"
-              placeholder="Enter quantity"
-              type={"number"}
-              onChange={(value: string) => {
-                handleFormData("stock", +value);
-              }}
-              isRequired
-            /> */}
+    <div className="relative flex flex-col w-full gap-4">
+      {renderLoading()}
+      <div className="p-4 rounded bg-base-100 ">
+        <div className="flex items-center justify-between w-full">
+          <div className="font-bold">
+            {isEdit ? "Edit Variant" : "Create Variant"}
           </div>
-          <div className="items-center justify-between gap-4 row-flex">
-            <CurrencyInput
-              label="Selling Price "
-              symbol="dollor"
-              value={variantForm?.selling_price}
-              placeholder="Enter selling price"
-              className="flex-1"
-              isRequired
-              onChange={(value) => {
-                handleFormData("selling_price", +value);
-              }}
-            />
-            <CurrencyInput
-              label="Cost Price "
-              symbol="dollor"
-              value={variantForm?.cost_price}
-              placeholder="Enter cost price"
-              className="flex-1"
-              isRequired
-              onChange={(value) => {
-                handleFormData("cost_price", +value);
-              }}
-            />
-          </div>
-          <ContentItem title="Options">
-            {options?.map((option: any) => {
-              return (
-                <SelectBox
-                  label={`${Capitalize(option?.title)}`}
-                  key={option?.id}
-                  defaultInputValue={optionValue(option)}
-                  options={parseSelectBoxValue(
-                    option?.values || [],
-                    "name",
-                    "id"
-                  )}
-                  onChange={(option_value) =>
-                    handleValues(option.id, option_value?.value)
-                  }
-                  className="flex-1"
-                />
-              );
-            })}
-          </ContentItem>
+          <Button
+            disabled={createLoading}
+            onClick={onSubmit}
+            className="min-w-[100px]"
+            size="sm"
+          >
+            Save{" "}
+          </Button>
         </div>
-      </ModalBody>
-      <ModalFooter>
-        <Button onClick={handleSave} progress color="success">
-          Save
-        </Button>
-      </ModalFooter>
-    </ModalContainer>
-  );
-};
-const ContentItem = ({ title, children }: any) => {
-  return (
-    <div className="gap-1 col-flex">
-      <div className="font-bold">{Capitalize(title)}</div>
-      <div className="flex-wrap gap-4 row-flex">{children}</div>
-    </div>
-  );
-};
+        <div className="grid grid-cols-2 gap-4">
+          {renderFormField("title")}
+          {renderFormField("stock")}
+          {renderFormField("selling_price")}
+          {renderFormField("cost_price")}
 
-export default ProductVariant;
+          {!isEdit &&
+            // @ts-ignore
+            options?.map((option) => (
+              <RenderSelectOption
+                key={option?.id}
+                {...{ option, selectedValues, handleSelect }}
+              />
+            ))}
+        </div>
+      </div>
+      <VariantList {...{ variants, fetchVariants, handleEdit }} />
+    </div>
+  )
+}
+
+const RenderSelectOption = ({ option, selectedValues, handleSelect }: any) => {
+  const options = parseSelectBoxValue(option?.values || [], "name", "id")
+  const getValue = useMemo(() => {
+    return selectedValues[option?.id]
+  }, [option?.id, selectedValues])
+  return (
+    <SelectBox
+      label={Capitalize(option?.title)}
+      {...{ options }}
+      value={getValue}
+      onChange={(value) => {
+        handleSelect(option?.id, value?.value)
+      }}
+    />
+  )
+}
+
+const VariantList = ({ variants, fetchVariants, toast, handleEdit }: any) => {
+  // const { mutate: removeVariant, isLoading: removeLoading } =
+  //   api.admin.productVariant.remove.useMutation({
+  //     onSuccess: () => {
+  //       fetchVariants()
+  //       toast({
+  //         title: "Variant Remove Successfully",
+  //       })
+  //     },
+  //   })
+  return (
+    <div className="relative flex flex-col gap-4 p-4 rounded bg-base-100">
+      {/* {removeLoading && <Loading message="Variant Removing ...." />} */}
+      <div className="font-bold">Variants</div>
+      <div className="relative grid grid-cols-2 gap-4">
+        {variants?.map((item: any) => (
+          <VariantItem
+            // onRemove={() => removeVariant({ id: item.id })}
+            onEdit={() => handleEdit(item)}
+            key={item?.id}
+            {...{ item }}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+const VariantItem = ({ item, onRemove, onEdit }: any) => {
+  const renderValue = useCallback((value?: any) => {
+    return (
+      <div className="flex items-center gap-1 text-sm">
+        <span className="capitalize"> {value?.option?.title}:</span>{" "}
+        <span>{value?.name}</span>
+      </div>
+    )
+  }, [])
+  return (
+    <div className="flex flex-col gap-1 p-4 px-4 py-2 border border-blue-300 rounded">
+      <div className="flex items-center justify-between gap-4">
+        <div className="text-sm font-medium capitalize">
+          {item?.title || "Variant Title"}
+        </div>
+        <div className="flex items-center gap-2">
+          <Trash2
+            size={20}
+            strokeWidth={1.5}
+            className="cursor-pointer text-error"
+            onClick={onRemove}
+          />
+
+          <Edit
+            size={20}
+            strokeWidth={1.5}
+            className="cursor-pointer text-info"
+            onClick={onEdit}
+          />
+        </div>
+      </div>
+      <div className="flex items-center gap-4 ">
+        <div className="flex items-center gap-1 text-sm">
+          <span>Selling Price:</span> {FormatCurrency(item?.selling_price)}
+        </div>
+        <div className="flex items-center gap-1 text-sm">
+          <span> Stock:</span> <span>{item?.stock}</span>
+        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        {item?.option_values?.map((value: any) => renderValue(value))}
+      </div>
+    </div>
+  )
+}
+
+export default ProductVariant

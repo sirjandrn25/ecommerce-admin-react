@@ -1,6 +1,7 @@
-import { EmptyFunction } from "@Utils/common.utils";
+import { EmptyFunction, GetObjectFromArray } from "@Utils/common.utils";
 import Joi from "joi";
-import { useState, useMemo, useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
+import getSchemaElement from "../Components/getSchemaElement.component";
 import { JoiErrorMessageToJson } from "../Utils/joiValidation.utils";
 
 //single validation object get
@@ -109,6 +110,7 @@ const useForm = (
     }
     return sanitizeData;
   }, []);
+
   const verify = useCallback(
     (key: any = null) => {
       const { error: err } = validationSchema.validate(
@@ -128,6 +130,7 @@ const useForm = (
     [formData, sanitizeFormData, validationSchema]
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleFormData = (key: string, value: any) => {
     realTimeValidate && verify();
 
@@ -138,6 +141,45 @@ const useForm = (
       };
     });
   };
+  const hasError = useCallback(
+    (key: string) => {
+      return typeof error[key] !== "undefined";
+    },
+    [error]
+  );
+
+  const renderFormField = useCallback(
+    (
+      name: string,
+      index?: number | string,
+      formDataKey: string = ""
+    ): any => {
+      const field = GetObjectFromArray(schema, 'name', name)
+      console.log({ field })
+
+      const Element = getSchemaElement(field?.type || "text");
+      return (
+        <div key={field.name || index} className={field.name}>
+          <Element
+            {...field}
+            onChange={(value: any) => {
+              if (
+                ["select", "async_select"].includes(field?.type as string)
+              ) {
+                handleFormData(formDataKey, value?.value);
+              } else {
+                handleFormData(formDataKey, value);
+              }
+            }}
+            value={formData[field?.name]}
+            error={hasError(field.name)}
+            errorMessage={error[field?.name]}
+          />
+        </div>
+      );
+    },
+    [error, formData, handleFormData, hasError, schema]
+  );
 
   const onSubmit = useCallback(
     (next: any = EmptyFunction) => {
@@ -157,6 +199,7 @@ const useForm = (
     onSubmit,
     formData,
     setFormData,
+    renderFormField
   };
 };
 
