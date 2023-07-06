@@ -44,7 +44,6 @@ const useOrderDetail = (id: number) => {
 
   const total_amount = useMemo(() => {
     return (orderItems as any).reduce((acc: number, item: any) => {
-      console.log({ item });
       return acc + item?.order_item?.unit_price * item?.order_item?.quantity;
     }, 0);
   }, [orderItems]);

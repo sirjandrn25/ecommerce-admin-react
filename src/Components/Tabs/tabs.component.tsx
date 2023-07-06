@@ -1,5 +1,5 @@
 import useNavigation from "@Hooks/useNavigation.hook";
-import { GetObjectFromArray, IsUniqueArrayObject } from "@Utils/common.utils";
+import { EmptyFunction, GetObjectFromArray, IsUniqueArrayObject } from "@Utils/common.utils";
 import { useState } from "react";
 import { useEffectOnce, useUpdateEffect } from "react-use";
 
@@ -18,6 +18,7 @@ export interface TabInterface {
   isNavigation?: boolean;
   navigation_key?: string;
   defaultActiveTab?: string | number;
+  onChangeTab?: (tab?: string | number) => void
 }
 
 const Tabs = ({
@@ -27,11 +28,16 @@ const Tabs = ({
   tabContentClassName = "",
   tabHeaderClassName = "",
   defaultActiveTab,
+  onChangeTab = EmptyFunction,
   className = "",
 }: TabInterface) => {
   const [active, setActive] = useState<string | number>(defaultActiveTab || 0);
   const [isActiveKey, setIsActiveKey] = useState<boolean>(false);
   const { navigation, pathname, query = {} } = useNavigation();
+
+  useUpdateEffect(() => {
+    onChangeTab(active)
+  }, [active])
 
   const handleNavigation = (activeTab: string | number) => {
     if (!isNavigation) return;
@@ -87,11 +93,10 @@ const Tabs = ({
   const TabItem = ({ item, index }: any) => {
     return (
       <a
-        className={`tab  tab-bordered  ${
-          checkActiveTab(item?.key, index)
-            ? "tab-active !border-info"
-            : "border-white"
-        }`}
+        className={`tab  tab-bordered  ${checkActiveTab(item?.key, index)
+          ? "tab-active !border-info"
+          : "border-white"
+          }`}
         onClick={() => storeActiveTabKey(item?.key, index)}
       >
         {item?.name}

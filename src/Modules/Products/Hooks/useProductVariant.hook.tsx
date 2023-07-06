@@ -60,7 +60,14 @@ const useProductVariant = () => {
     const { success } = await sendRequest({
       end_point: "product-variants",
       method: 'post',
-      classParams: values
+      classParams: {
+        ...values,
+        product_id,
+        option_values: Object.values(selectedValues),
+        selling_price: Number(values?.selling_price),
+        cost_price: Number(values?.cost_price),
+        stock: Number(values?.stock),
+      }
 
     })
     setCreateLoading(false)
@@ -70,6 +77,7 @@ const useProductVariant = () => {
     }
   }
   const { formData, onSubmit, setFormData, renderFormField } = useForm(fields, {}, handleSubmit)
+
   const fetchList = () =>
     asyncService({
       end_point: `products/${product_id}/variants`,

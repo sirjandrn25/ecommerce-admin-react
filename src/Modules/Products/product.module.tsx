@@ -2,12 +2,16 @@ import Container from "@Components/Container/container.component";
 import Tabs, { TabInterface } from "@Components/Tabs/tabs.component";
 import GeneralInformation from "./Components/generalInformation.component";
 import ProductVariant from "./Components/productVariant.component";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Button from "@Components/Button/button.component";
 import ProductOption from "./Components/productOption.component";
 
+
 const ProductModule = () => {
   const generalRef = useRef<any>(null);
+  const [activeTab, setActiveTab] = useState<any>('general')
+
+
 
   const tab_props: TabInterface = {
     tabs: [
@@ -43,14 +47,14 @@ const ProductModule = () => {
     ],
     tabContentClassName: "!p-0",
     tabHeaderClassName: "px-4",
-    isNavigation: false,
+
   };
   return (
     <Container>
       <div className="w-full pt-4 overflow-hidden rounded col-flex bg-base-100">
         <div className="items-center justify-between gap-4 px-4 row-flex">
           <div className="font-bold ">Edit Product</div>
-          <Button
+          {activeTab === 'general' && <Button
             progress
             onClick={(next) => {
               const current = generalRef?.current || {};
@@ -61,9 +65,11 @@ const ProductModule = () => {
             color="success"
           >
             Save
-          </Button>
+          </Button>}
         </div>
-        <Tabs {...tab_props} />
+        <Tabs onChangeTab={(key) => {
+          setActiveTab(key)
+        }} {...tab_props} isNavigation={false} />
       </div>
     </Container>
   );

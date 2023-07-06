@@ -7,45 +7,11 @@ import { Edit, Trash2 } from "lucide-react"
 import { useCallback, useMemo } from "react"
 import useProductVariant from "../Hooks/useProductVariant.hook"
 
-const ProductVariant = ({ productId, selling_price }: any) => {
+const ProductVariant = () => {
 
   const { data: variants, fetchVariants, setFormData, isLoading: variantLoading, onSubmit, renderFormField, createLoading, setEditId, selectedValues, setSelectedValues, isEdit, options } = useProductVariant()
 
 
-
-
-
-  // const { mutate: createVariant, isLoading: creatingVariant } =
-  //   api.admin.productVariant.create.useMutation({
-  //     onSuccess: (_: any) => {
-  //       fetchVariants()
-  //       handleResetForm({ selling_price })
-  //       setEditId(undefined)
-  //       setSelectedValues({})
-  //       toast({
-  //         variant: "default",
-  //         title: "Successfully saved variant",
-  //       })
-  //     },
-  //   })
-
-
-  // const onSave = (values: any) => {
-
-  //   if (!isEdit)
-  //     return createVariant({
-  //       ...values,
-  //       option_values: Object.values(selectedValues),
-  //       product_id: productId,
-  //     })
-
-  //   return createVariant({
-  //     ...values,
-  //     product_id: productId,
-  //     id: editId,
-  //     option_values: [],
-  //   })
-  // }
 
 
 

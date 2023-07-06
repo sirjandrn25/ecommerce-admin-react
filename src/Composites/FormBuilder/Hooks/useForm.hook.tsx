@@ -152,10 +152,10 @@ const useForm = (
     (
       name: string,
       index?: number | string,
-      formDataKey: string = ""
+
     ): any => {
       const field = GetObjectFromArray(schema, 'name', name)
-      console.log({ field })
+
 
       const Element = getSchemaElement(field?.type || "text");
       return (
@@ -166,9 +166,9 @@ const useForm = (
               if (
                 ["select", "async_select"].includes(field?.type as string)
               ) {
-                handleFormData(formDataKey, value?.value);
+                handleFormData(name, value?.value);
               } else {
-                handleFormData(formDataKey, value);
+                handleFormData(name, value);
               }
             }}
             value={formData[field?.name]}
